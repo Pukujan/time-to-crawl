@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from ttc.api.provenance import expand_provenance
+from ttc.domain.querylimit import clamp_limit
 from ttc.ports.catalog import OperationalCatalogPort
 from ttc.ports.profiles import ProfileRegistryPort
 
@@ -18,10 +19,14 @@ class BoundedGateway:
             raise PermissionError(f"action_denied:{action}")
         if action == "list_records":
             profile_id = str(kwargs["profile_id"])
-            return self._catalog.list_by_profile(profile_id)
+            limit = kwargs.get("limit")
+            records = self._catalog.list_by_profile(profile_id)
+            return records[: clamp_limit(int(limit) if limit is not None else None)]
         if action == "get_profile":
             return self._profiles.get(str(kwargs["profile_id"]))
         if action == "list_provenance":
             records = self._catalog.list_by_profile(str(kwargs["profile_id"]))
+            limit = kwargs.get("limit")
+            records = records[: clamp_limit(int(limit) if limit is not None else None)]
             return tuple(expand_provenance(record) for record in records)
         raise PermissionError("source_propose_is_not_authorize")
