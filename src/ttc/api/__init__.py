@@ -1,6 +1,7 @@
 from ttc.api.gateway import BoundedGateway
 from ttc.api.mcp import catalog as mcp_catalog
 from ttc.api.query import CatalogQuery
+from ttc.api.provenance import expand_provenance
 from ttc.api.queryops import filter_records, sort_records
 from ttc.api.table import as_table
 
@@ -11,4 +12,5 @@ __all__ = [
     "mcp_catalog",
     "filter_records",
     "sort_records",
+    "expand_provenance",
 ]
