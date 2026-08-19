@@ -5,6 +5,7 @@ import re
 from urllib.parse import urlparse, unquote
 
 from ttc.domain.models import PolicyDecision
+from ttc.domain.robots import path_of, robots_allows
 
 FORBIDDEN_HOSTS = frozenset(
     {
@@ -110,9 +111,11 @@ class PolicyBroker:
         self,
         allowed_origins: frozenset[str],
         granted_capabilities: frozenset[str],
+        robots_txt: str | None = None,
     ) -> None:
         self._allowed_origins = allowed_origins
         self._granted = granted_capabilities
+        self._robots_txt = robots_txt
 
     def authorize(
         self,
@@ -145,11 +148,21 @@ class PolicyBroker:
                 reason="capability_denied:" + ",".join(sorted(extra)),
                 robots_compliant=True,
             )
+        robots_ok = True
+        if self._robots_txt is not None:
+            robots_ok = robots_allows(self._robots_txt, path_of(url))
+            if not robots_ok:
+                return PolicyDecision(
+                    allowed=False,
+                    url=url,
+                    reason="robots_disallow",
+                    robots_compliant=False,
+                )
         return PolicyDecision(
             allowed=True,
             url=url,
             reason="allowlisted",
-            robots_compliant=True,
+            robots_compliant=robots_ok,
         )
 
     def authorize_chain(self, urls: tuple[str, ...], *, profile_id: str) -> PolicyDecision:
