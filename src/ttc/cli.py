@@ -57,7 +57,23 @@ def build_skeleton(*, engine_id: str = "fake") -> WalkingSkeleton:
     )
 
 
-def main() -> None:
+def status() -> dict[str, object]:
+    profiles = load_reference_profiles()
+    return {
+        "live_crawl": False,
+        "profiles": sorted(profiles),
+        "engines": {"fake": "available", "crawlee": "blocked_until_issue_4", "scrapy": "blocked_until_issue_4"},
+        "issue_gate": "#4 isolation before real Web",
+    }
+
+
+def main(argv: list[str] | None = None) -> None:
+    import sys
+
+    args = argv if argv is not None else sys.argv[1:]
+    if args and args[0] == "status":
+        print(json.dumps(status(), indent=2))
+        return
     skeleton = build_skeleton()
     products = skeleton.run(PRODUCT_URL, "products-and-offers")
     jobs = skeleton.run(JOB_URL, "jobs")

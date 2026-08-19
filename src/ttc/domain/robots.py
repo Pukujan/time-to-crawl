@@ -5,11 +5,11 @@ from urllib.parse import urlparse
 
 def robots_allows(robots_txt: str, path: str, user_agent: str = "*") -> bool:
     rules = _rules_for(robots_txt, user_agent)
-    allowed = True
-    for kind, value in rules:
-        if path.startswith(value):
-            allowed = kind == "allow"
-    return allowed
+    matches = [(kind, value) for kind, value in rules if path.startswith(value)]
+    if not matches:
+        return True
+    kind, _value = max(matches, key=lambda item: (len(item[1]), item[0] == "allow"))
+    return kind == "allow"
 
 
 def _rules_for(robots_txt: str, user_agent: str) -> list[tuple[str, str]]:
