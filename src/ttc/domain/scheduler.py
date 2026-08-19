@@ -4,6 +4,7 @@ from dataclasses import dataclass, replace
 
 from ttc.domain.freshness import is_due
 from ttc.domain.identity import new_id
+from ttc.domain.urls import canonicalize
 
 KIND_DISCOVER = "DISCOVER"
 KIND_REFRESH = "REFRESH"
@@ -30,6 +31,7 @@ class Scheduler:
         self._items: dict[str, WorkItem] = {}
 
     def enqueue(self, url: str, kind: str) -> WorkItem:
+        url = canonicalize(url)
         key = _key(url, kind)
         existing = self._items.get(key)
         if existing is None:
@@ -109,4 +111,4 @@ def engine_seen_cannot_suppress_refresh(engine_seen: set[str], url: str, schedul
 
 
 def _key(url: str, kind: str) -> str:
-    return f"{kind}:{url}"
+    return f"{kind}:{canonicalize(url)}"
