@@ -14,3 +14,4 @@ Unreleased work is on `main`. Architecture authority remains issues #1–#17.
 - Provenance records robots_compliant; status reports robots on / anti_block off
 - Skeleton mints RunReceipt; CLI prints receipt_id
 - ClockPort/FrozenClock; fixture-only `ttc soak`
+- `ttc doctor` preflight; unknown CLI commands fail closed

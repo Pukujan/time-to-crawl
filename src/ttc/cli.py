@@ -137,7 +137,11 @@ def main(argv: list[str] | None = None) -> None:
     if args and args[0] == "soak":
         from ttc.ops.soak import soak_refresh_cycles
 
-        cycles = int(args[1]) if len(args) > 1 else 24
+        raw = args[1] if len(args) > 1 else "24"
+        try:
+            cycles = int(raw)
+        except ValueError as exc:
+            raise PermissionError("soak_cycles_not_int") from exc
         completed, seen = soak_refresh_cycles("https://fixture.time-to-crawl.test/widget", cycles=cycles)
         print(json.dumps({"cycles": completed, "engine_seen": seen, "live_crawl": False}, indent=2))
         return
