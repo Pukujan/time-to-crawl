@@ -59,7 +59,11 @@ class WalkingSkeleton:
 
     def run(self, url: str, profile_id: str) -> SkeletonResult:
         profile = self._profiles.get(profile_id)
-        decision = self._policy.authorize(url, profile_id=profile.profile_id)
+        decision = self._policy.authorize(
+            url,
+            profile_id=profile.profile_id,
+            requested_capabilities=profile.requested_capabilities,
+        )
         if not decision.allowed:
             raise PermissionError(decision.reason)
         run_id = new_id("run")
@@ -74,14 +78,22 @@ class WalkingSkeleton:
             hops = hops + (crawled.final_url,)
         self._budget.consume(depth=max(0, len(hops) - 1))
         for hop in hops:
-            hop_decision = self._policy.authorize(hop, profile_id=profile.profile_id)
+            hop_decision = self._policy.authorize(
+                hop,
+                profile_id=profile.profile_id,
+                requested_capabilities=profile.requested_capabilities,
+            )
             if not hop_decision.allowed:
                 raise PermissionError(hop_decision.reason)
         if detect_redirect_loop(hops):
             raise PermissionError("redirect_loop")
         authorized_outlinks: list[str] = []
         for outlink in crawled.outlinks:
-            out_decision = self._policy.authorize(outlink, profile_id=profile.profile_id)
+            out_decision = self._policy.authorize(
+                outlink,
+                profile_id=profile.profile_id,
+                requested_capabilities=profile.requested_capabilities,
+            )
             if out_decision.allowed:
                 authorized_outlinks.append(outlink)
         fail_closed_on_challenge(crawled.body)

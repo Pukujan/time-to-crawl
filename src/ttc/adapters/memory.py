@@ -30,8 +30,18 @@ class AllowlistPolicy:
     ) -> None:
         self._broker = PolicyBroker(allowed, granted or DEFAULT_GRANTED)
 
-    def authorize(self, url: str, *, profile_id: str) -> PolicyDecision:
-        return self._broker.authorize(url, profile_id=profile_id)
+    def authorize(
+        self,
+        url: str,
+        *,
+        profile_id: str,
+        requested_capabilities: tuple[str, ...] = (),
+    ) -> PolicyDecision:
+        return self._broker.authorize(
+            url,
+            profile_id=profile_id,
+            requested_capabilities=requested_capabilities,
+        )
 
 
 class FakeCrawlerEngine:

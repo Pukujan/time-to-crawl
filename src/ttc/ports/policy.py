@@ -6,5 +6,11 @@ from ttc.domain.models import PolicyDecision
 
 
 class PolicyDecisionPort(Protocol):
-    def authorize(self, url: str, *, profile_id: str) -> PolicyDecision:
+    def authorize(
+        self,
+        url: str,
+        *,
+        profile_id: str,
+        requested_capabilities: tuple[str, ...] = (),
+    ) -> PolicyDecision:
         """Authorize a destination. Every redirect must be re-authorized independently."""
