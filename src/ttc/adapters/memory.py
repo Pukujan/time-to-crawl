@@ -5,6 +5,7 @@ from pathlib import Path
 
 from ttc.domain.capabilities import DEFAULT_GRANTED
 from ttc.domain.identity import new_id
+from ttc.domain.killswitch import is_enabled
 from ttc.domain.models import (
     CrawlResult,
     CrawlWork,
@@ -48,6 +49,8 @@ class FakeCrawlerEngine:
         self._outlinks = outlinks or {}
 
     def crawl(self, work: CrawlWork) -> CrawlResult:
+        if not is_enabled(self.engine_id):
+            raise PermissionError(f"engine_disabled:{self.engine_id}")
         path = self._fixtures.get(work.url)
         if path is None:
             raise FileNotFoundError(work.url)
