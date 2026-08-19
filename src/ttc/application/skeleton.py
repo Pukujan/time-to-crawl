@@ -18,6 +18,7 @@ from ttc.domain.models import CrawlWork, Evidence, TypedRecord
 from ttc.domain.provenance import ProvenanceLink, bind
 from ttc.domain.receipt_headers import receipt_headers
 from ttc.domain.redirects import detect_redirect_loop
+from ttc.domain.soft404 import is_soft_404
 from ttc.domain.statusgate import blocked_body_must_not_succeed
 from ttc.ports.catalog import OperationalCatalogPort
 from ttc.ports.crawler import CrawlerEnginePort
@@ -98,6 +99,8 @@ class WalkingSkeleton:
         if not max_redirects_ok(crawled):
             raise PermissionError("too_many_redirects")
         blocked_body_must_not_succeed(crawled.status, crawled.body)
+        if is_soft_404(crawled):
+            raise PermissionError("soft_404")
         if not body_within_limit(crawled):
             raise PermissionError("body_too_large")
         consume_result(self._budget, crawled)
