@@ -22,9 +22,11 @@ def test_profile_and_record_schemas_validate() -> None:
     products = load_profile(PROFILES / "products-and-offers.v1.json")
     jobs = load_profile(PROFILES / "jobs.v1.json")
     providers = load_profile(PROFILES / "inference-providers.v1.json")
+    legal = load_profile(PROFILES / "legal-documents.v1.json")
     jsonschema.validate(products.to_record(), _schema("profile-v1.schema.json"))
     jsonschema.validate(jobs.to_record(), _schema("profile-v1.schema.json"))
     jsonschema.validate(providers.to_record(), _schema("profile-v1.schema.json"))
+    jsonschema.validate(legal.to_record(), _schema("profile-v1.schema.json"))
     digest = "a" * 64
     evidence = Evidence(
         evidence_id=evidence_id_for(digest),
