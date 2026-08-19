@@ -9,6 +9,7 @@ from ttc.domain.challenges import fail_closed_on_challenge
 from ttc.domain.identity import evidence_id_for, new_id
 from ttc.domain.models import CrawlWork, Evidence, TypedRecord
 from ttc.domain.provenance import ProvenanceLink, bind
+from ttc.domain.redirects import detect_redirect_loop
 from ttc.ports.catalog import OperationalCatalogPort
 from ttc.ports.crawler import CrawlerEnginePort
 from ttc.ports.evidence import EvidenceStorePort
@@ -64,11 +65,15 @@ class WalkingSkeleton:
             CrawlWork(url=decision.url, profile_id=profile.profile_id, run_id=run_id)
         )
         consume_result(self._budget, crawled)
-        hops = crawled.redirect_chain + (crawled.final_url,)
+        hops = crawled.redirect_chain
+        if not hops or hops[-1] != crawled.final_url:
+            hops = hops + (crawled.final_url,)
         for hop in hops:
             hop_decision = self._policy.authorize(hop, profile_id=profile.profile_id)
             if not hop_decision.allowed:
                 raise PermissionError(hop_decision.reason)
+        if detect_redirect_loop(hops):
+            raise PermissionError("redirect_loop")
         authorized_outlinks: list[str] = []
         for outlink in crawled.outlinks:
             out_decision = self._policy.authorize(outlink, profile_id=profile.profile_id)
