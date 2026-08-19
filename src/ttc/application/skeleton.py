@@ -4,6 +4,7 @@ import hashlib
 from dataclasses import dataclass
 
 from ttc.application.budgeting import consume_result
+from ttc.domain.bodysize import body_within_limit
 from ttc.domain.budget import Budget, BudgetTracker
 from ttc.domain.challenges import fail_closed_on_challenge
 from ttc.domain.contenttypes import content_type_allowed
@@ -74,6 +75,8 @@ class WalkingSkeleton:
         if not max_redirects_ok(crawled):
             raise PermissionError("too_many_redirects")
         blocked_body_must_not_succeed(crawled.status, crawled.body)
+        if not body_within_limit(crawled):
+            raise PermissionError("body_too_large")
         consume_result(self._budget, crawled)
         hops = crawled.redirect_chain
         if not hops or hops[-1] != crawled.final_url:
