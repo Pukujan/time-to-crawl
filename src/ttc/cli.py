@@ -84,6 +84,9 @@ def main(argv: list[str] | None = None) -> None:
     import sys
 
     args = argv if argv is not None else sys.argv[1:]
+    if args and args[0] in {"-h", "--help", "help"}:
+        print(json.dumps({"commands": ["status", "properties", "receipts", "profiles", "soak", "skeleton"], "live_crawl": False}, indent=2))
+        return
     if args and args[0] == "status":
         print(json.dumps(status(), indent=2))
         return
@@ -106,6 +109,8 @@ def main(argv: list[str] | None = None) -> None:
         completed, seen = soak_refresh_cycles("https://fixture.time-to-crawl.test/widget", cycles=cycles)
         print(json.dumps({"cycles": completed, "engine_seen": seen, "live_crawl": False}, indent=2))
         return
+    if args and args[0] not in {"skeleton", "run"}:
+        raise PermissionError(f"unknown_command:{args[0]}")
     skeleton = build_skeleton()
     products = skeleton.run(PRODUCT_URL, "products-and-offers")
     jobs = skeleton.run(JOB_URL, "jobs")
