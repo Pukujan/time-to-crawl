@@ -180,6 +180,30 @@
       "lean_ref": null,
       "hidden_holdout": true,
       "status": "active"
+    },
+    {
+      "property_id": "TTC-SEC-001",
+      "statement": "Browser/fetch workers cannot read host credentials; secret headers are redacted from receipts.",
+      "severity": "critical",
+      "owner": "policy",
+      "oracle_refs": ["tests/test_headers.py::test_secret_headers_are_redacted", "tests/test_skeleton_headers.py::test_skeleton_evidence_headers_are_redacted"],
+      "mutation_scope": ["src/ttc/domain/headers.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": true,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-SEC-002",
+      "statement": "Internet content cannot directly invoke tools or widen authority.",
+      "severity": "critical",
+      "owner": "policy",
+      "oracle_refs": ["tests/test_pagepolicy.py::test_page_text_cannot_widen_scope", "tests/test_injection.py::test_prompt_injection_cannot_invoke_tools"],
+      "mutation_scope": ["src/ttc/domain/pagepolicy.py", "src/ttc/domain/injection.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": true,
+      "status": "active"
     }
   ]
 }

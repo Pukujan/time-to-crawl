@@ -24,6 +24,8 @@ REQUIRED = {
     "TTC-KNOW-001",
     "TTC-EVID-001",
     "TTC-DEAL-001",
+    "TTC-SEC-001",
+    "TTC-SEC-002",
 }
 
 
