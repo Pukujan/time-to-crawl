@@ -90,6 +90,30 @@ def test_policy_blocks_unknown_url() -> None:
         skeleton.run("https://evil.example/widget", "products-and-offers")
 
 
+def test_redirect_to_loopback_is_blocked_before_success() -> None:
+    catalog = MemoryCatalog()
+    products = load_profile(ROOT / "contracts" / "profiles" / "products-and-offers.v1.json")
+    jobs = load_profile(ROOT / "contracts" / "profiles" / "jobs.v1.json")
+    skeleton = WalkingSkeleton(
+        policy=AllowlistPolicy(frozenset({PRODUCT_URL})),
+        engine=FakeCrawlerEngine(
+            {PRODUCT_URL: ROOT / "tests" / "fixtures" / "widget.json"},
+            redirects={PRODUCT_URL: ("http://127.0.0.1/secret", PRODUCT_URL)},
+        ),
+        evidence=MemoryEvidenceStore(),
+        extractor=SchemaGuidedExtractor(),
+        identity=KeyIdentityResolver(),
+        catalog=catalog,
+        profiles=FileProfileRegistry(
+            {products.profile_id: products, jobs.profile_id: jobs}
+        ),
+        query=MemoryQuery(catalog),
+    )
+    with pytest.raises(PermissionError, match="forbidden_network"):
+        skeleton.run(PRODUCT_URL, "products-and-offers")
+    assert catalog.list_by_profile("products-and-offers") == ()
+
+
 def test_crawler_engine_can_be_replaced_by_another_fake() -> None:
     catalog: OperationalCatalogPort = MemoryCatalog()
     products = load_profile(ROOT / "contracts" / "profiles" / "products-and-offers.v1.json")

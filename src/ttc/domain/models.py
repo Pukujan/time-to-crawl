@@ -91,6 +91,10 @@ class TypedRecord:
     evidence_id: str
     identity_key: str
 
+    def __post_init__(self) -> None:
+        if not isinstance(self.evidence_id, str) or not self.evidence_id:
+            raise TypeError("evidence_id_required")
+
     def to_record(self) -> dict[str, object]:
         return {
             "schema_version": "ttc.typed-record.v1",

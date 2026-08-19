@@ -55,6 +55,11 @@ class WalkingSkeleton:
         crawled = self._engine.crawl(
             CrawlWork(url=decision.url, profile_id=profile.profile_id, run_id=run_id)
         )
+        hops = crawled.redirect_chain + (crawled.final_url,)
+        for hop in hops:
+            hop_decision = self._policy.authorize(hop, profile_id=profile.profile_id)
+            if not hop_decision.allowed:
+                raise PermissionError(hop_decision.reason)
         digest = hashlib.sha256(crawled.body).hexdigest()
         evidence = Evidence(
             evidence_id=evidence_id_for(digest),

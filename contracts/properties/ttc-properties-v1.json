@@ -1,0 +1,173 @@
+{
+  "schema_version": "ttc.properties.v1",
+  "properties": [
+    {
+      "property_id": "TTC-NET-001",
+      "statement": "No acquisition worker can reach forbidden network classes (loopback, private, link-local, metadata, multicast, unspecified).",
+      "severity": "critical",
+      "owner": "policy",
+      "oracle_refs": ["tests/test_policy.py::test_forbidden_network_classes"],
+      "mutation_scope": ["src/ttc/domain/netpolicy.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": true,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-NET-002",
+      "statement": "Every redirect or navigation hop is independently re-authorized; a hop to a forbidden destination is blocked before contact.",
+      "severity": "critical",
+      "owner": "policy",
+      "oracle_refs": ["tests/test_policy.py::test_redirect_hops_are_reauthorized"],
+      "mutation_scope": ["src/ttc/domain/netpolicy.py", "src/ttc/application/acquire.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": true,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-AUTH-001",
+      "statement": "A model, profile, or crawler adapter cannot widen its own capabilities or source scope.",
+      "severity": "critical",
+      "owner": "policy",
+      "oracle_refs": ["tests/test_policy.py::test_profile_cannot_self_grant_capabilities"],
+      "mutation_scope": ["src/ttc/domain/capabilities.py", "src/ttc/adapters/memory.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": true,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-AUTH-002",
+      "statement": "Source and profile authorization is explicit and auditable.",
+      "severity": "critical",
+      "owner": "policy",
+      "oracle_refs": ["tests/test_policy.py::test_authorization_is_explicit"],
+      "mutation_scope": ["src/ttc/domain/netpolicy.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": false,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-PROV-001",
+      "statement": "Every accepted derived record resolves to evidence plus acquisition/extraction activity identity.",
+      "severity": "critical",
+      "owner": "evidence",
+      "oracle_refs": ["tests/test_walking_skeleton.py::test_products_profile_extracts_two_independent_offers"],
+      "mutation_scope": ["src/ttc/application/skeleton.py"],
+      "tla_ref": "formal/tla/Scheduler.tla",
+      "lean_ref": null,
+      "hidden_holdout": false,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-PROV-002",
+      "statement": "Provenance cannot be fabricated by model output alone.",
+      "severity": "critical",
+      "owner": "evidence",
+      "oracle_refs": ["tests/test_evidence.py::test_model_citation_is_not_evidence"],
+      "mutation_scope": ["src/ttc/domain/models.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": true,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-ENGINE-001",
+      "statement": "Swapping a conforming crawler-engine adapter preserves engine-independent request/result/receipt semantics.",
+      "severity": "high",
+      "owner": "engine",
+      "oracle_refs": ["tests/test_engine_conformance.py::test_two_fakes_preserve_receipt_semantics"],
+      "mutation_scope": ["src/ttc/ports/crawler.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": false,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-SCHED-001",
+      "statement": "Crawler-engine URL deduplication cannot suppress a due REFRESH run.",
+      "severity": "critical",
+      "owner": "scheduler",
+      "oracle_refs": ["tests/test_scheduler.py::test_engine_dedup_cannot_suppress_refresh"],
+      "mutation_scope": ["src/ttc/domain/scheduler.py"],
+      "tla_ref": "formal/tla/Scheduler.tla",
+      "lean_ref": null,
+      "hidden_holdout": false,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-SCHED-002",
+      "statement": "Stale leases or generations cannot win after cancellation or retry.",
+      "severity": "critical",
+      "owner": "scheduler",
+      "oracle_refs": ["tests/test_scheduler.py::test_stale_lease_cannot_complete"],
+      "mutation_scope": ["src/ttc/domain/scheduler.py"],
+      "tla_ref": "formal/tla/Scheduler.tla",
+      "lean_ref": null,
+      "hidden_holdout": false,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-PROFILE-001",
+      "statement": "Profiles may change schema/extraction/query behavior but cannot mutate network or security authority implicitly.",
+      "severity": "critical",
+      "owner": "profiles",
+      "oracle_refs": ["tests/test_policy.py::test_profile_cannot_self_grant_capabilities"],
+      "mutation_scope": ["src/ttc/adapters/memory.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": true,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-PROFILE-002",
+      "statement": "Two materially different profiles can run through the same crawler-engine/application path.",
+      "severity": "high",
+      "owner": "profiles",
+      "oracle_refs": ["tests/test_walking_skeleton.py::test_second_profile_does_not_change_crawler_or_domain"],
+      "mutation_scope": ["src/ttc/application/skeleton.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": false,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-ID-001",
+      "statement": "Identity and change logic obeys profile-declared keys and never treats vector similarity as identity authority.",
+      "severity": "critical",
+      "owner": "identity",
+      "oracle_refs": ["tests/test_identity.py::test_identity_uses_profile_keys_not_similarity"],
+      "mutation_scope": ["src/ttc/adapters/memory.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": true,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-KNOW-001",
+      "statement": "FOSSIL/graph-derived knowledge cannot overwrite raw source evidence or operational observations.",
+      "severity": "critical",
+      "owner": "knowledge",
+      "oracle_refs": ["tests/test_knowledge.py::test_knowledge_cannot_overwrite_evidence"],
+      "mutation_scope": ["src/ttc/adapters/memory.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": true,
+      "status": "active"
+    },
+    {
+      "property_id": "TTC-EVID-001",
+      "statement": "Canonical artifact identity is the SHA-256 of original uncompressed bytes; storage codec cannot change identity.",
+      "severity": "critical",
+      "owner": "evidence",
+      "oracle_refs": ["tests/test_evidence.py::test_identity_is_original_bytes"],
+      "mutation_scope": ["src/ttc/domain/artifacts.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": false,
+      "status": "active"
+    }
+  ]
+}

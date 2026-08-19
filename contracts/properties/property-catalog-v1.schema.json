@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://time-to-crawl.local/schemas/property-catalog-v1.schema.json",
+  "title": "TTC property catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "properties"],
+  "properties": {
+    "schema_version": {"const": "ttc.properties.v1"},
+    "properties": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "property_id",
+          "statement",
+          "severity",
+          "owner",
+          "oracle_refs",
+          "mutation_scope",
+          "hidden_holdout",
+          "status"
+        ],
+        "properties": {
+          "property_id": {
+            "type": "string",
+            "pattern": "^TTC-[A-Z]+-[0-9]{3}$"
+          },
+          "statement": {"type": "string", "minLength": 1},
+          "severity": {"enum": ["critical", "high", "medium"]},
+          "owner": {"type": "string", "minLength": 1},
+          "oracle_refs": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "mutation_scope": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1}
+          },
+          "tla_ref": {"type": ["string", "null"]},
+          "lean_ref": {"type": ["string", "null"]},
+          "hidden_holdout": {"type": "boolean"},
+          "status": {"enum": ["active", "draft", "retired"]}
+        }
+      }
+    }
+  }
+}

@@ -9,10 +9,11 @@ description = "Time to Crawl: policy-bounded general-purpose acquisition and ext
 requires-python = ">=3.11"
 dependencies = [
   "jsonschema>=4.23,<5",
+  "zstandard>=0.23,<1",
 ]
 
 [project.optional-dependencies]
-test = ["pytest>=8,<9"]
+test = ["pytest>=8,<9", "hypothesis>=6,<7"]
 
 [project.scripts]
 ttc = "ttc.cli:main"

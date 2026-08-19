@@ -51,14 +51,16 @@ Then a second profile with a different schema **without changing crawler-engine/
 
 ## Assurance
 
-Issue #3 owns the property catalog. Until it lands, name any semantic change against these IDs when they apply:
+Issue #3 owns the property catalog at `contracts/properties/ttc-properties-v1.json`. Semantic PRs must name affected IDs:
 
 - `TTC-NET-001` / `TTC-NET-002`
-- `TTC-SEC-001` / `TTC-SEC-002`
-- `TTC-ID-001` / `TTC-ID-002`
-- `TTC-EVID-001`
-- `TTC-FRONTIER-001`
-- `TTC-DEAL-001`
+- `TTC-AUTH-001` / `TTC-AUTH-002`
+- `TTC-PROV-001` / `TTC-PROV-002`
+- `TTC-ENGINE-001`
+- `TTC-SCHED-001` / `TTC-SCHED-002`
+- `TTC-PROFILE-001` / `TTC-PROFILE-002`
+- `TTC-ID-001`
 - `TTC-KNOW-001`
+- `TTC-EVID-001`
 
 Do not skip or weaken tests to obtain green. Model prose is not completion authority.

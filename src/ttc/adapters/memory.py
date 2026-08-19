@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from ttc.domain.capabilities import DEFAULT_GRANTED
 from ttc.domain.identity import new_id
 from ttc.domain.models import (
     CrawlResult,
@@ -12,6 +13,7 @@ from ttc.domain.models import (
     Profile,
     TypedRecord,
 )
+from ttc.domain.netpolicy import PolicyBroker
 
 
 FORBIDDEN_PROFILE_KEYS = frozenset(
@@ -20,31 +22,38 @@ FORBIDDEN_PROFILE_KEYS = frozenset(
 
 
 class AllowlistPolicy:
-    def __init__(self, allowed: frozenset[str]) -> None:
-        self._allowed = allowed
+    def __init__(
+        self,
+        allowed: frozenset[str],
+        granted: frozenset[str] | None = None,
+    ) -> None:
+        self._broker = PolicyBroker(allowed, granted or DEFAULT_GRANTED)
 
     def authorize(self, url: str, *, profile_id: str) -> PolicyDecision:
-        if url in self._allowed:
-            return PolicyDecision(
-                allowed=True, url=url, reason="allowlisted", robots_compliant=True
-            )
-        return PolicyDecision(
-            allowed=False, url=url, reason="not_allowlisted", robots_compliant=True
-        )
+        return self._broker.authorize(url, profile_id=profile_id)
 
 
 class FakeCrawlerEngine:
-    def __init__(self, fixtures: dict[str, Path], *, engine_id: str = "fake") -> None:
+    def __init__(
+        self,
+        fixtures: dict[str, Path],
+        *,
+        engine_id: str = "fake",
+        redirects: dict[str, tuple[str, ...]] | None = None,
+    ) -> None:
         self._fixtures = fixtures
         self.engine_id = engine_id
+        self._redirects = redirects or {}
 
     def crawl(self, work: CrawlWork) -> CrawlResult:
         path = self._fixtures.get(work.url)
         if path is None:
             raise FileNotFoundError(work.url)
+        chain = self._redirects.get(work.url, ())
+        final_url = chain[-1] if chain else work.url
         return CrawlResult(
             requested_url=work.url,
-            final_url=work.url,
+            final_url=final_url,
             status=200,
             headers=(("content-type", "application/json"),),
             body=path.read_bytes(),
@@ -52,6 +61,7 @@ class FakeCrawlerEngine:
             captured_at="2026-08-19T00:00:00Z",
             engine_id=self.engine_id,
             engine_version="0.0.0-fake",
+            redirect_chain=chain,
         )
 
 
@@ -145,9 +155,17 @@ class NullDiscovery:
         return ()
 
 
-class NullKnowledge:
+class MemoryKnowledge:
+    def __init__(self, evidence: MemoryEvidenceStore | None = None) -> None:
+        self._lessons: dict[str, tuple[str, str, str]] = {}
+        self._evidence = evidence
+
     def record_lesson(self, profile_id: str, statement: str, evidence_id: str) -> str:
-        return new_id("know")
+        if self._evidence is not None:
+            self._evidence.get(evidence_id)
+        lesson_id = new_id("know")
+        self._lessons[lesson_id] = (profile_id, statement, evidence_id)
+        return lesson_id
 
 
 def _identity_key(profile: Profile, row: dict[str, object]) -> str:
