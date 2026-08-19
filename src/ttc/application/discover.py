@@ -25,11 +25,16 @@ def run_discover(
         limit = 32
         if profiles is not None:
             limit = profiles.get(profile_id).max_outlinks
+        same_host_only = False
+        if profiles is not None:
+            same_host_only = profiles.get(profile_id).same_host_only
         queued = enqueue_authorized_outlinks(
             scheduler,
             result.outlinks,
             policy=policy,
             profile_id=profile_id,
             limit=limit,
+            seed_url=url,
+            same_host_only=same_host_only,
         )
     return result.evidence_id, queued

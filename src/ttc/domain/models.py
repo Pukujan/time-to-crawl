@@ -45,6 +45,7 @@ class Profile:
     refresh_interval_seconds: int = 86400
     max_depth: int = 2
     max_outlinks: int = 32
+    same_host_only: bool = True
 
     def to_record(self) -> dict[str, object]:
         return {
@@ -59,6 +60,7 @@ class Profile:
             "refresh_interval_seconds": self.refresh_interval_seconds,
             "max_depth": self.max_depth,
             "max_outlinks": self.max_outlinks,
+            "same_host_only": self.same_host_only,
         }
 
 

@@ -9,5 +9,6 @@
   "allowed_content_types": ["application/json", "text/html"],
   "refresh_interval_seconds": 86400,
   "max_depth": 2,
-  "max_outlinks": 32
+  "max_outlinks": 32,
+  "same_host_only": true
 }

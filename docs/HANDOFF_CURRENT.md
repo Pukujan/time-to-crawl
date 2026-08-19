@@ -4,7 +4,7 @@ Authority remains GitHub issues #1–#17. This is a snapshot, not architecture t
 
 ## Head
 
-`2f7626e` on `main`. `pytest`: 183 passed, 1 xfailed (DNS rebinding until #4 resolver policy).
+`1b0f89d` on `main`. `pytest`: 185 passed, 1 xfailed (DNS rebinding until #4 resolver policy).
 
 ## Landed (fixture / fake only)
 

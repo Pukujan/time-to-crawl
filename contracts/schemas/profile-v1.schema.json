@@ -33,6 +33,7 @@
     },
     "refresh_interval_seconds": {"type": "integer", "minimum": 1},
     "max_depth": {"type": "integer", "minimum": 0},
-    "max_outlinks": {"type": "integer", "minimum": 0}
+    "max_outlinks": {"type": "integer", "minimum": 0},
+    "same_host_only": {"type": "boolean"}
   }
 }

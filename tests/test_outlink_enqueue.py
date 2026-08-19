@@ -41,3 +41,19 @@ def test_outlink_enqueue_respects_limit() -> None:
         limit=2,
     )
     assert accepted == ("https://example.com/a", "https://example.com/b")
+
+
+def test_same_host_only_drops_cross_host_outlinks() -> None:
+    scheduler = Scheduler()
+    policy = AllowlistPolicy(
+        frozenset({"https://example.com/a", "https://other.example/b"})
+    )
+    accepted = enqueue_authorized_outlinks(
+        scheduler,
+        ("https://example.com/a", "https://other.example/b"),
+        policy=policy,
+        profile_id="jobs",
+        seed_url="https://example.com/seed",
+        same_host_only=True,
+    )
+    assert accepted == ("https://example.com/a",)

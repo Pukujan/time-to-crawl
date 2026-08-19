@@ -217,4 +217,5 @@ def load_profile(path: Path) -> Profile:
         refresh_interval_seconds=int(data.get("refresh_interval_seconds", 86400)),
         max_depth=int(data.get("max_depth", 2)),
         max_outlinks=int(data.get("max_outlinks", 32)),
+        same_host_only=bool(data.get("same_host_only", True)),
     )
