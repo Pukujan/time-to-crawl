@@ -14,6 +14,7 @@ from ttc.adapters.memory import (
     SchemaGuidedExtractor,
     load_profile,
 )
+from ttc.adapters.receipts import ReceiptLog
 from ttc.application.skeleton import WalkingSkeleton
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -96,6 +97,11 @@ def main(argv: list[str] | None = None) -> None:
     jobs = skeleton.run(JOB_URL, "jobs")
     providers = skeleton.run(PROVIDER_URL, "inference-providers")
     legal = skeleton.run(LEGAL_URL, "legal-documents")
+    receipt_path = Path("receipts.jsonl")
+    log = ReceiptLog(receipt_path)
+    for result in (products, jobs, providers, legal):
+        if result.receipt is not None:
+            log.append(result.receipt)
     print(
         json.dumps(
             {
@@ -123,6 +129,7 @@ def main(argv: list[str] | None = None) -> None:
                     "receipt_id": legal.receipt.receipt_id if legal.receipt else None,
                     "record_count": len(legal.records),
                 },
+                "receipt_log": str(receipt_path),
             },
             indent=2,
         )
