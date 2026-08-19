@@ -12,3 +12,4 @@ Unreleased work is on `main`. Architecture authority remains issues #1–#17.
 - MIME/body match, 403/404, empty-body, and secret-header redaction fail closed
 - Lease TTL fencing in Python and TLA+
 - Provenance records robots_compliant; status reports robots on / anti_block off
+- Skeleton mints RunReceipt; CLI prints receipt_id

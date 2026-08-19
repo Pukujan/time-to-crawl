@@ -4,7 +4,7 @@ Authority remains GitHub issues #1–#17. This is a snapshot, not architecture t
 
 ## Head
 
-`9ca0ad7` on `main`. `pytest`: 166 passed, 1 xfailed (DNS rebinding until #4 resolver policy).
+`afa81a5` on `main`. `pytest`: 167 passed, 1 xfailed (DNS rebinding until #4 resolver policy).
 
 ## Landed (fixture / fake only)
 
@@ -13,7 +13,7 @@ Authority remains GitHub issues #1–#17. This is a snapshot, not architecture t
 - #4 PolicyBroker network/capability/robots + WorkerEnvelope (no Podman/gVisor runtime yet)
 - #5 CAS, Zstd, WARC prototype, S3-shaped memory object store
 - #6 source registry + sitemap/feed parsers (candidates unauthorized)
-- #7 DISCOVER/REFRESH, durable JSON scheduler, evidence-before-success, simulated 24-cycle soak, freshness windows
+- #7 DISCOVER/REFRESH, durable JSON scheduler, evidence-before-success, simulated 24-cycle soak, freshness windows, lease TTL
 - #8 fake bakeoff harness + UnavailableEngine fail-closed placeholders
 - #9 JSON + HTML JSON-LD + plaintext extractors
 - #10 identity keys + change detection (embeddings ignored)
@@ -22,7 +22,7 @@ Authority remains GitHub issues #1–#17. This is a snapshot, not architecture t
 - #13 integrity inspect()
 - #14 FossilStub + RebuildableGraph (cannot overwrite evidence)
 - #15 BoundedGateway + MCP catalog + filter/sort + provenance expansion
-- #16 health probe + chaos restart + `ttc status`
+- #16 health probe + chaos restart + `ttc status` / `ttc properties`
 
 Live crawlee/scrapy/search/firecrawl/browsertrix/playwright APIs fail closed. Tavily/Exa keys in desktop env are unused.
 
