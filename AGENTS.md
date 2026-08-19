@@ -62,5 +62,6 @@ Issue #3 owns the property catalog at `contracts/properties/ttc-properties-v1.js
 - `TTC-ID-001`
 - `TTC-KNOW-001`
 - `TTC-EVID-001`
+- `TTC-DEAL-001`
 
 Do not skip or weaken tests to obtain green. Model prose is not completion authority.

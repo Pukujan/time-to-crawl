@@ -28,6 +28,9 @@ LAYER_RULES = {
     "ports": {"allowed_prefixes": ("ttc.domain", "ttc.ports")},
     "application": {"allowed_prefixes": ("ttc.domain", "ttc.ports", "ttc.application")},
     "api": {"allowed_prefixes": ("ttc.domain", "ttc.ports", "ttc.api")},
+    "profiles": {"allowed_prefixes": ("ttc.domain", "ttc.profiles")},
+    "ops": {"allowed_prefixes": ("ttc.domain", "ttc.ops")},
+    "assurance": {"allowed_prefixes": ("ttc.domain", "ttc.ports", "ttc.assurance")},
 }
 
 

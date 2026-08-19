@@ -168,6 +168,18 @@
       "lean_ref": null,
       "hidden_holdout": false,
       "status": "active"
+    },
+    {
+      "property_id": "TTC-DEAL-001",
+      "statement": "Budget, location, or condition violations cannot rank as valid shopper results.",
+      "severity": "high",
+      "owner": "profiles",
+      "oracle_refs": ["tests/test_deals.py::test_deal_ranking_is_profile_extension_not_engine"],
+      "mutation_scope": ["src/ttc/profiles/deals.py"],
+      "tla_ref": null,
+      "lean_ref": null,
+      "hidden_holdout": true,
+      "status": "active"
     }
   ]
 }
