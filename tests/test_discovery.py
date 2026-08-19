@@ -47,3 +47,19 @@ def test_source_registry_rejects_forbidden_proposals() -> None:
     registry = SourceRegistry()
     with pytest.raises(PermissionError, match="forbidden_network"):
         registry.propose("http://127.0.0.1/", proposed_by="agent", profile_id="jobs")
+
+
+def test_source_registry_canonicalizes_duplicates() -> None:
+    registry = SourceRegistry()
+    first = registry.propose(
+        "HTTPS://Alpha.Example/widget/#frag",
+        proposed_by="agent",
+        profile_id="products-and-offers",
+    )
+    second = registry.propose(
+        "https://alpha.example/widget",
+        proposed_by="other",
+        profile_id="products-and-offers",
+    )
+    assert first.url == second.url == "https://alpha.example/widget"
+    assert registry.is_authorized("https://alpha.example/widget/#x") is False
