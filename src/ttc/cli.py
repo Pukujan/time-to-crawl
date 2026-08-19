@@ -92,6 +92,10 @@ def main(argv: list[str] | None = None) -> None:
 
         print(json.dumps(list(property_ids()), indent=2))
         return
+    if args and args[0] == "receipts":
+        path = Path(args[1] if len(args) > 1 else "receipts.jsonl")
+        print(json.dumps(list(ReceiptLog(path).load()), indent=2))
+        return
     skeleton = build_skeleton()
     products = skeleton.run(PRODUCT_URL, "products-and-offers")
     jobs = skeleton.run(JOB_URL, "jobs")
