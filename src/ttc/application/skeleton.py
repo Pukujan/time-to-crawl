@@ -3,6 +3,8 @@ from __future__ import annotations
 import hashlib
 from dataclasses import dataclass
 
+from ttc.application.budgeting import consume_result
+from ttc.domain.budget import Budget, BudgetTracker
 from ttc.domain.challenges import fail_closed_on_challenge
 from ttc.domain.identity import evidence_id_for, new_id
 from ttc.domain.models import CrawlWork, Evidence, TypedRecord
@@ -40,6 +42,7 @@ class WalkingSkeleton:
         catalog: OperationalCatalogPort,
         profiles: ProfileRegistryPort,
         query: QueryViewPort,
+        budget: Budget | None = None,
     ) -> None:
         self._policy = policy
         self._engine = engine
@@ -49,6 +52,7 @@ class WalkingSkeleton:
         self._catalog = catalog
         self._profiles = profiles
         self._query = query
+        self._budget = BudgetTracker(budget or Budget(32, 2_000_000, 2, 60))
 
     def run(self, url: str, profile_id: str) -> SkeletonResult:
         profile = self._profiles.get(profile_id)
@@ -59,6 +63,7 @@ class WalkingSkeleton:
         crawled = self._engine.crawl(
             CrawlWork(url=decision.url, profile_id=profile.profile_id, run_id=run_id)
         )
+        consume_result(self._budget, crawled)
         hops = crawled.redirect_chain + (crawled.final_url,)
         for hop in hops:
             hop_decision = self._policy.authorize(hop, profile_id=profile.profile_id)
