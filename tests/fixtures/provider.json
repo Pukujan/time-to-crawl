@@ -1,0 +1,12 @@
+{
+  "records": [
+    {
+      "record_type": "model",
+      "provider_id": "openrouter",
+      "model_id": "example-free-model",
+      "capabilities": ["chat"],
+      "pricing": "free",
+      "source_url": "https://providers.example/openrouter/example-free-model"
+    }
+  ]
+}

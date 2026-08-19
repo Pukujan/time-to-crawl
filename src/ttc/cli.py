@@ -19,18 +19,25 @@ from ttc.application.skeleton import WalkingSkeleton
 ROOT = Path(__file__).resolve().parents[2]
 PRODUCT_URL = "https://fixture.time-to-crawl.test/widget"
 JOB_URL = "https://fixture.time-to-crawl.test/job"
+PROVIDER_URL = "https://fixture.time-to-crawl.test/provider"
+
+
+def load_reference_profiles() -> dict:
+    names = ("products-and-offers.v1.json", "jobs.v1.json", "inference-providers.v1.json")
+    loaded = [load_profile(ROOT / "contracts" / "profiles" / name) for name in names]
+    return {profile.profile_id: profile for profile in loaded}
 
 
 def build_skeleton(*, engine_id: str = "fake") -> WalkingSkeleton:
     catalog = MemoryCatalog()
-    products = load_profile(ROOT / "contracts" / "profiles" / "products-and-offers.v1.json")
-    jobs = load_profile(ROOT / "contracts" / "profiles" / "jobs.v1.json")
+    profiles = load_reference_profiles()
     return WalkingSkeleton(
-        policy=AllowlistPolicy(frozenset({PRODUCT_URL, JOB_URL})),
+        policy=AllowlistPolicy(frozenset({PRODUCT_URL, JOB_URL, PROVIDER_URL})),
         engine=FakeCrawlerEngine(
             {
                 PRODUCT_URL: ROOT / "tests" / "fixtures" / "widget.json",
                 JOB_URL: ROOT / "tests" / "fixtures" / "job.json",
+                PROVIDER_URL: ROOT / "tests" / "fixtures" / "provider.json",
             },
             engine_id=engine_id,
         ),
@@ -38,9 +45,7 @@ def build_skeleton(*, engine_id: str = "fake") -> WalkingSkeleton:
         extractor=SchemaGuidedExtractor(),
         identity=KeyIdentityResolver(),
         catalog=catalog,
-        profiles=FileProfileRegistry(
-            {products.profile_id: products, jobs.profile_id: jobs}
-        ),
+        profiles=FileProfileRegistry(profiles),
         query=MemoryQuery(catalog),
     )
 
@@ -49,6 +54,7 @@ def main() -> None:
     skeleton = build_skeleton()
     products = skeleton.run(PRODUCT_URL, "products-and-offers")
     jobs = skeleton.run(JOB_URL, "jobs")
+    providers = skeleton.run(PROVIDER_URL, "inference-providers")
     print(
         json.dumps(
             {
@@ -61,6 +67,11 @@ def main() -> None:
                     "profile_id": jobs.profile_id,
                     "evidence_id": jobs.evidence_id,
                     "record_count": len(jobs.records),
+                },
+                "providers": {
+                    "profile_id": providers.profile_id,
+                    "evidence_id": providers.evidence_id,
+                    "record_count": len(providers.records),
                 },
             },
             indent=2,

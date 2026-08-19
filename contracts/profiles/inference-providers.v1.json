@@ -1,0 +1,9 @@
+{
+  "schema_version": "ttc.profile.v1",
+  "profile_id": "inference-providers",
+  "version": "1.0.0",
+  "title": "Inference providers",
+  "output_schema": "ttc.typed-record.v1",
+  "identity_keys": ["provider_id", "model_id"],
+  "requested_capabilities": ["fetch_public"]
+}

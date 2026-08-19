@@ -16,6 +16,7 @@ from ttc.adapters.memory import (
     load_profile,
 )
 from ttc.application.skeleton import WalkingSkeleton
+from ttc.cli import PROVIDER_URL, load_reference_profiles
 from ttc.ports.catalog import OperationalCatalogPort
 from ttc.ports.crawler import CrawlerEnginePort
 from ttc.ports.evidence import EvidenceStorePort
@@ -32,14 +33,14 @@ JOB_URL = "https://fixture.time-to-crawl.test/job"
 
 def _system(*, engine_id: str = "fake") -> WalkingSkeleton:
     catalog = MemoryCatalog()
-    products = load_profile(ROOT / "contracts" / "profiles" / "products-and-offers.v1.json")
-    jobs = load_profile(ROOT / "contracts" / "profiles" / "jobs.v1.json")
+    profiles = load_reference_profiles()
     return WalkingSkeleton(
-        policy=AllowlistPolicy(frozenset({PRODUCT_URL, JOB_URL})),
+        policy=AllowlistPolicy(frozenset({PRODUCT_URL, JOB_URL, PROVIDER_URL})),
         engine=FakeCrawlerEngine(
             {
                 PRODUCT_URL: ROOT / "tests" / "fixtures" / "widget.json",
                 JOB_URL: ROOT / "tests" / "fixtures" / "job.json",
+                PROVIDER_URL: ROOT / "tests" / "fixtures" / "provider.json",
             },
             engine_id=engine_id,
         ),
@@ -47,9 +48,7 @@ def _system(*, engine_id: str = "fake") -> WalkingSkeleton:
         extractor=SchemaGuidedExtractor(),
         identity=KeyIdentityResolver(),
         catalog=catalog,
-        profiles=FileProfileRegistry(
-            {products.profile_id: products, jobs.profile_id: jobs}
-        ),
+        profiles=FileProfileRegistry(profiles),
         query=MemoryQuery(catalog),
     )
 
@@ -82,6 +81,16 @@ def test_second_profile_does_not_change_crawler_or_domain() -> None:
     assert products.profile_id != jobs.profile_id
     assert len(first.query("products-and-offers")) == 2
     assert len(second.query("jobs")) == 1
+
+
+def test_third_profile_uses_same_engine_path() -> None:
+    skeleton = _system()
+    result = skeleton.run(PROVIDER_URL, "inference-providers")
+    records = skeleton.query("inference-providers")
+    assert result.profile_id == "inference-providers"
+    assert len(records) == 1
+    assert records[0].payload["model_id"] == "example-free-model"
+    assert records[0].identity_key == "openrouter|example-free-model"
 
 
 def test_policy_blocks_unknown_url() -> None:
