@@ -4,6 +4,7 @@ from ttc.application.skeleton import WalkingSkeleton
 from ttc.domain.politeness import Politeness, can_fetch
 from ttc.domain.profile_policy import refresh_interval
 from ttc.domain.scheduler import KIND_REFRESH, Scheduler
+from ttc.ports.clock import ClockPort
 from ttc.ports.profiles import ProfileRegistryPort
 
 
@@ -13,10 +14,15 @@ def run_refresh(
     url: str,
     profile_id: str,
     *,
-    now: int,
+    now: int | None = None,
+    clock: ClockPort | None = None,
     profiles: ProfileRegistryPort,
     politeness: Politeness | None = None,
 ) -> str | None:
+    if now is None:
+        if clock is None:
+            raise ValueError("now_or_clock_required")
+        now = clock.now()
     profile = profiles.get(profile_id)
     due = scheduler.maybe_due_refresh(url, now=now, interval=refresh_interval(profile))
     if due is None:
