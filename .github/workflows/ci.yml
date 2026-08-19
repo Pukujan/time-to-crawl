@@ -14,8 +14,10 @@ jobs:
       - run: python -m pip install -e ".[test]"
       - run: python -m pytest
       - run: python -m ttc.cli
-      - name: Check TLA+ spec is present
+      - name: Check TLA+ spec and property catalog
         run: |
           test -f formal/tla/Scheduler.tla
           grep -q EvidenceBeforeSuccess formal/tla/Scheduler.tla
           grep -q NoStaleWin formal/tla/Scheduler.tla
+          test -f contracts/properties/ttc-properties-v1.json
+          test -f mutmut.toml
