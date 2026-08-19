@@ -43,6 +43,7 @@ class Profile:
     requested_capabilities: tuple[str, ...] = ()
     allowed_content_types: tuple[str, ...] = ("application/json",)
     refresh_interval_seconds: int = 86400
+    max_depth: int = 2
 
     def to_record(self) -> dict[str, object]:
         return {
@@ -55,6 +56,7 @@ class Profile:
             "requested_capabilities": list(self.requested_capabilities),
             "allowed_content_types": list(self.allowed_content_types),
             "refresh_interval_seconds": self.refresh_interval_seconds,
+            "max_depth": self.max_depth,
         }
 
 

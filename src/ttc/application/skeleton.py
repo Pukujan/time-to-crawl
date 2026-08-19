@@ -107,7 +107,10 @@ class WalkingSkeleton:
         hops = crawled.redirect_chain
         if not hops or hops[-1] != crawled.final_url:
             hops = hops + (crawled.final_url,)
-        self._budget.consume(depth=max(0, len(hops) - 1))
+        hop_depth = max(0, len(hops) - 1)
+        if hop_depth > profile.max_depth:
+            raise PermissionError("profile_max_depth")
+        self._budget.consume(depth=hop_depth)
         for hop in hops:
             hop_decision = self._policy.authorize(
                 hop,

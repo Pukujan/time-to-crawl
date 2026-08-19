@@ -7,5 +7,6 @@
   "identity_keys": ["requisition_id", "source_url"],
   "requested_capabilities": ["fetch_public"],
   "allowed_content_types": ["application/json", "text/html"],
-  "refresh_interval_seconds": 86400
+  "refresh_interval_seconds": 86400,
+  "max_depth": 2
 }
