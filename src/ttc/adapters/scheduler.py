@@ -24,8 +24,8 @@ class DurableScheduler(Scheduler):
         self._save()
         return item
 
-    def complete(self, item: WorkItem, evidence_id: str) -> WorkItem:
-        done = super().complete(item, evidence_id)
+    def complete(self, item: WorkItem, evidence_id: str, *, now: int | None = None) -> WorkItem:
+        done = super().complete(item, evidence_id, now=now)
         self._save()
         return done
 

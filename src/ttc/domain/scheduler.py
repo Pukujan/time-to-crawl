@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 
+from ttc.domain.freshness import is_due
 from ttc.domain.identity import new_id
 
 KIND_DISCOVER = "DISCOVER"
@@ -21,6 +22,7 @@ class WorkItem:
     state: str = STATE_READY
     lease_id: str | None = None
     evidence_id: str | None = None
+    completed_at: int | None = None
 
 
 class Scheduler:
@@ -56,7 +58,7 @@ class Scheduler:
         self._items[key] = leased
         return leased
 
-    def complete(self, item: WorkItem, evidence_id: str) -> WorkItem:
+    def complete(self, item: WorkItem, evidence_id: str, *, now: int | None = None) -> WorkItem:
         current = self._items[_key(item.url, item.kind)]
         if current.lease_id != item.lease_id or current.generation != item.generation:
             raise PermissionError("stale_lease")
@@ -64,9 +66,23 @@ class Scheduler:
             raise PermissionError("not_leased")
         if not evidence_id:
             raise PermissionError("evidence_required")
-        done = replace(current, state=STATE_DONE, due=False, evidence_id=evidence_id)
+        done = replace(
+            current,
+            state=STATE_DONE,
+            due=False,
+            evidence_id=evidence_id,
+            completed_at=now,
+        )
         self._items[_key(item.url, item.kind)] = done
         return done
+
+    def maybe_due_refresh(self, url: str, *, now: int, interval: int) -> WorkItem | None:
+        key = _key(url, KIND_REFRESH)
+        existing = self._items.get(key)
+        last = existing.completed_at if existing is not None else None
+        if not is_due(last, now, interval):
+            return None
+        return self.due_refresh(url)
 
     def cancel(self, url: str, kind: str) -> WorkItem:
         key = _key(url, kind)

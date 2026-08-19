@@ -4,7 +4,7 @@ Authority remains GitHub issues #1–#17. This is a snapshot, not architecture t
 
 ## Head
 
-`04f3a2e` on `main`. `pytest`: 106 passed, 1 xfailed (DNS rebinding until #4 resolver policy).
+`213d556` on `main`. `pytest`: 114 passed, 1 xfailed (DNS rebinding until #4 resolver policy).
 
 ## Landed (fixture / fake only)
 
@@ -12,17 +12,19 @@ Authority remains GitHub issues #1–#17. This is a snapshot, not architecture t
 - #3 property catalog, Hypothesis fuzz, sealed holdout interface, Scheduler.tla, mutmut.toml
 - #4 PolicyBroker network/capability/robots + WorkerEnvelope (no Podman/gVisor runtime yet)
 - #5 CAS, Zstd, WARC prototype, S3-shaped memory object store
-- #6 source registry + sitemap parser (candidates unauthorized)
-- #7 DISCOVER/REFRESH, durable JSON scheduler, evidence-before-success
+- #6 source registry + sitemap/feed parsers (candidates unauthorized)
+- #7 DISCOVER/REFRESH, durable JSON scheduler, evidence-before-success, simulated 24-cycle soak
 - #8 fake bakeoff harness + UnavailableEngine fail-closed placeholders
-- #9 JSON + HTML JSON-LD extractors
+- #9 JSON + HTML JSON-LD + plaintext extractors
 - #10 identity keys + change detection (embeddings ignored)
 - #11 HistoryCatalog + SQLite catalog
 - #12 four profiles: products, jobs, inference-providers, legal-documents
 - #13 integrity inspect()
 - #14 FossilStub + RebuildableGraph (cannot overwrite evidence)
 - #15 BoundedGateway + MCP catalog
-- #16 health probe + chaos restart
+- #16 health probe + chaos restart + `ttc status`
+
+Live crawlee/scrapy/search APIs fail closed. Tavily/Exa keys in desktop env are unused.
 
 ## Still blocked / open
 
