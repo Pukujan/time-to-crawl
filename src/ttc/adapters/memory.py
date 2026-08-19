@@ -175,7 +175,11 @@ class MemoryKnowledge:
 
 
 def _identity_key(profile: Profile, row: dict[str, object]) -> str:
-    parts = [str(row[key]) for key in profile.identity_keys]
+    parts = []
+    for key in profile.identity_keys:
+        if key not in row:
+            raise ValueError(f"missing_identity_key:{key}")
+        parts.append(str(row[key]))
     return "|".join(parts)
 
 
