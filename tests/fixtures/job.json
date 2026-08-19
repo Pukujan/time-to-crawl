@@ -1,0 +1,13 @@
+{
+  "records": [
+    {
+      "record_type": "job",
+      "title": "Staff Software Engineer",
+      "employer": "Acme Labs",
+      "location": "Remote",
+      "requisition_id": "REQ-441",
+      "source_url": "https://jobs.example/req-441",
+      "employment_type": "full_time"
+    }
+  ]
+}

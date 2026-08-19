@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://time-to-crawl.local/schemas/evidence-v1.schema.json",
+  "title": "Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evidence_id",
+    "content_sha256",
+    "fetched_url",
+    "captured_at",
+    "content_type",
+    "engine_id",
+    "engine_version",
+    "profile_id",
+    "run_id"
+  ],
+  "properties": {
+    "schema_version": {"const": "ttc.evidence.v1"},
+    "evidence_id": {"type": "string", "minLength": 1},
+    "content_sha256": {"type": "string", "minLength": 64, "maxLength": 64},
+    "fetched_url": {"type": "string", "minLength": 1},
+    "captured_at": {"type": "string", "minLength": 1},
+    "content_type": {"type": "string", "minLength": 1},
+    "engine_id": {"type": "string", "minLength": 1},
+    "engine_version": {"type": "string", "minLength": 1},
+    "profile_id": {"type": "string", "minLength": 1},
+    "run_id": {"type": "string", "minLength": 1}
+  }
+}

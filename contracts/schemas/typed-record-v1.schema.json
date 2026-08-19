@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://time-to-crawl.local/schemas/typed-record-v1.schema.json",
+  "title": "TypedRecord",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_id",
+    "profile_id",
+    "record_type",
+    "payload",
+    "evidence_id",
+    "identity_key"
+  ],
+  "properties": {
+    "schema_version": {"const": "ttc.typed-record.v1"},
+    "record_id": {"type": "string", "minLength": 1},
+    "profile_id": {"type": "string", "minLength": 1},
+    "record_type": {"type": "string", "minLength": 1},
+    "payload": {"type": "object"},
+    "evidence_id": {"type": "string", "minLength": 1},
+    "identity_key": {"type": "string", "minLength": 1}
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "records": [
+    {
+      "record_type": "offer",
+      "canonical_name": "Acme Widget",
+      "brand": "Acme",
+      "seller_id": "seller_alpha",
+      "source_url": "https://alpha.example/widget",
+      "price_minor": 1999,
+      "currency": "USD",
+      "availability": "in_stock"
+    },
+    {
+      "record_type": "offer",
+      "canonical_name": "Acme Widget",
+      "brand": "Acme",
+      "seller_id": "seller_beta",
+      "source_url": "https://beta.example/widget",
+      "price_minor": 1899,
+      "currency": "USD",
+      "availability": "in_stock"
+    }
+  ]
+}

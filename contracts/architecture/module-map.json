@@ -1,0 +1,51 @@
+{
+  "schema_version": "ttc.architecture.module-map.v1",
+  "dependency_direction": ["domain", "application", "ports", "adapters", "api"],
+  "forbidden_domain_imports": [
+    "crawlee",
+    "scrapy",
+    "playwright",
+    "browsertrix",
+    "crawl4ai",
+    "firecrawl",
+    "searxng",
+    "tavily",
+    "exa",
+    "tika",
+    "psycopg",
+    "pgvector",
+    "fossil_core",
+    "graphiti",
+    "neo4j"
+  ],
+  "ports": [
+    "CrawlerEnginePort",
+    "DiscoveryProviderPort",
+    "PolicyDecisionPort",
+    "EvidenceStorePort",
+    "ContentExtractorPort",
+    "IdentityResolverPort",
+    "OperationalCatalogPort",
+    "ProfileRegistryPort",
+    "KnowledgePort",
+    "QueryViewPort"
+  ],
+  "modules": [
+    {"id": "profile_registry", "port": "ProfileRegistryPort", "issue": 12},
+    {"id": "policy_broker", "port": "PolicyDecisionPort", "issue": 4},
+    {"id": "discovery", "port": "DiscoveryProviderPort", "issue": 6},
+    {"id": "source_registry", "port": "DiscoveryProviderPort", "issue": 6},
+    {"id": "scheduler", "port": null, "issue": 7},
+    {"id": "crawler_engine", "port": "CrawlerEnginePort", "issue": 8},
+    {"id": "evidence_store", "port": "EvidenceStorePort", "issue": 5},
+    {"id": "content_extraction", "port": "ContentExtractorPort", "issue": 9},
+    {"id": "identity_resolver", "port": "IdentityResolverPort", "issue": 10},
+    {"id": "operational_catalog", "port": "OperationalCatalogPort", "issue": 11},
+    {"id": "query_views", "port": "QueryViewPort", "issue": 12},
+    {"id": "integrity", "port": null, "issue": 13},
+    {"id": "fossil_adapter", "port": "KnowledgePort", "issue": 14},
+    {"id": "agent_gateway", "port": "QueryViewPort", "issue": 15},
+    {"id": "operations", "port": null, "issue": 16},
+    {"id": "assurance_kernel", "port": null, "issue": 3}
+  ]
+}
