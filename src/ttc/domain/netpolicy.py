@@ -2,12 +2,17 @@ from __future__ import annotations
 
 import ipaddress
 import re
+from typing import Protocol
 from urllib.parse import urlparse, unquote
 
 from ttc.domain.capabilities import KNOWN_CAPABILITIES
 from ttc.domain.models import PolicyDecision
 from ttc.domain.robots import path_of, robots_allows
 from ttc.domain.urls import canonicalize
+
+
+class _SourceAuth(Protocol):
+    def is_authorized(self, url: str) -> bool: ...
 
 FORBIDDEN_HOSTS = frozenset(
     {
@@ -124,10 +129,14 @@ class PolicyBroker:
         allowed_origins: frozenset[str],
         granted_capabilities: frozenset[str],
         robots_txt: str | None = None,
+        source_registry: _SourceAuth | None = None,
+        require_source_auth: bool = False,
     ) -> None:
         self._allowed_origins = allowed_origins
         self._granted = granted_capabilities
         self._robots_txt = robots_txt
+        self._source_registry = source_registry
+        self._require_source_auth = require_source_auth
 
     def authorize(
         self,
@@ -169,6 +178,14 @@ class PolicyBroker:
                 reason="capability_denied:" + ",".join(sorted(extra)),
                 robots_compliant=True,
             )
+        if self._require_source_auth:
+            if self._source_registry is None or not self._source_registry.is_authorized(canonical):
+                return PolicyDecision(
+                    allowed=False,
+                    url=canonical,
+                    reason="source_unauthorized",
+                    robots_compliant=True,
+                )
         robots_ok = True
         if self._robots_txt is not None:
             robots_ok = robots_allows(self._robots_txt, path_of(canonical))
