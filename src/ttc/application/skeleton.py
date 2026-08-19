@@ -7,6 +7,7 @@ from ttc.application.budgeting import consume_result
 from ttc.domain.budget import Budget, BudgetTracker
 from ttc.domain.challenges import fail_closed_on_challenge
 from ttc.domain.contenttypes import content_type_allowed
+from ttc.domain.limits import max_redirects_ok
 from ttc.domain.identity import evidence_id_for, new_id
 from ttc.domain.models import CrawlWork, Evidence, TypedRecord
 from ttc.domain.provenance import ProvenanceLink, bind
@@ -65,6 +66,8 @@ class WalkingSkeleton:
         crawled = self._engine.crawl(
             CrawlWork(url=decision.url, profile_id=profile.profile_id, run_id=run_id)
         )
+        if not max_redirects_ok(crawled):
+            raise PermissionError("too_many_redirects")
         consume_result(self._budget, crawled)
         hops = crawled.redirect_chain
         if not hops or hops[-1] != crawled.final_url:
