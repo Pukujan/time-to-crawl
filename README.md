@@ -14,10 +14,16 @@ pip install -e ".[test]"
 pytest
 ```
 
-Walking skeleton (fixture only, no network):
+Fixture-only commands (no network):
 
 ```bash
 ttc skeleton
+ttc status
+ttc properties
+ttc profiles
+ttc soak 24
+ttc receipts
+ttc help
 ```
 
 ## Layout
@@ -32,4 +38,4 @@ See [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`contracts/architecture/module-map
 
 ## Current gate
 
-Fixture walking skeleton is on `main` with four profiles (products, jobs, inference-providers, legal-documents), PolicyBroker, CAS/WARC, scheduler TLA+, and a fake-engine bakeoff harness. No live Web crawling until **#4** isolation passes. Engine selection waits on **#8**.
+Walking skeleton, PolicyBroker, CAS/WARC, scheduler TLA+, four profiles, and a fake-engine bakeoff harness are on `main`. Live crawlee/scrapy/search remain fail-closed. No live Web crawling until **#4** isolation passes. Engine selection waits on **#8**.
