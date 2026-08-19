@@ -58,11 +58,21 @@ def build_skeleton(*, engine_id: str = "fake") -> WalkingSkeleton:
 
 
 def status() -> dict[str, object]:
+    from ttc.assurance.catalog import property_ids
+
     profiles = load_reference_profiles()
     return {
         "live_crawl": False,
         "profiles": sorted(profiles),
-        "engines": {"fake": "available", "crawlee": "blocked_until_issue_4", "scrapy": "blocked_until_issue_4"},
+        "property_count": len(property_ids()),
+        "engines": {
+            "fake": "available",
+            "crawlee": "blocked_until_issue_4",
+            "scrapy": "blocked_until_issue_4",
+            "playwright": "blocked_until_issue_4",
+            "firecrawl": "blocked_until_issue_4",
+            "browsertrix": "blocked_until_issue_4",
+        },
         "issue_gate": "#4 isolation before real Web",
     }
 
@@ -73,6 +83,11 @@ def main(argv: list[str] | None = None) -> None:
     args = argv if argv is not None else sys.argv[1:]
     if args and args[0] == "status":
         print(json.dumps(status(), indent=2))
+        return
+    if args and args[0] == "properties":
+        from ttc.assurance.catalog import property_ids
+
+        print(json.dumps(list(property_ids()), indent=2))
         return
     skeleton = build_skeleton()
     products = skeleton.run(PRODUCT_URL, "products-and-offers")

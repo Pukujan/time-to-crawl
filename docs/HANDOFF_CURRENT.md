@@ -4,7 +4,7 @@ Authority remains GitHub issues #1–#17. This is a snapshot, not architecture t
 
 ## Head
 
-`1667aca` on `main`. `pytest`: 134 passed, 1 xfailed (DNS rebinding until #4 resolver policy).
+`2318c5b` on `main`. `pytest`: 138 passed, 1 xfailed (DNS rebinding until #4 resolver policy).
 
 ## Landed (fixture / fake only)
 
@@ -21,7 +21,7 @@ Authority remains GitHub issues #1–#17. This is a snapshot, not architecture t
 - #12 four profiles: products, jobs, inference-providers, legal-documents
 - #13 integrity inspect()
 - #14 FossilStub + RebuildableGraph (cannot overwrite evidence)
-- #15 BoundedGateway + MCP catalog + filter/sort
+- #15 BoundedGateway + MCP catalog + filter/sort + provenance expansion
 - #16 health probe + chaos restart + `ttc status`
 
 Live crawlee/scrapy/search/firecrawl/browsertrix/playwright APIs fail closed. Tavily/Exa keys in desktop env are unused.

@@ -104,6 +104,24 @@ def test_legal_profile_uses_same_engine_path() -> None:
     assert records[0].identity_key == "123 F.3d 456|US-9"
 
 
+def test_four_profiles_share_one_engine_instance() -> None:
+    skeleton = _system(engine_id="shared-fake")
+    products = skeleton.run(PRODUCT_URL, "products-and-offers")
+    jobs = skeleton.run(JOB_URL, "jobs")
+    providers = skeleton.run(PROVIDER_URL, "inference-providers")
+    legal = skeleton.run(LEGAL_URL, "legal-documents")
+    assert {products.profile_id, jobs.profile_id, providers.profile_id, legal.profile_id} == {
+        "products-and-offers",
+        "jobs",
+        "inference-providers",
+        "legal-documents",
+    }
+    assert len(skeleton.query("products-and-offers")) == 2
+    assert len(skeleton.query("jobs")) == 1
+    assert len(skeleton.query("inference-providers")) == 1
+    assert len(skeleton.query("legal-documents")) == 1
+
+
 def test_policy_blocks_unknown_url() -> None:
     skeleton = _system()
     with pytest.raises(PermissionError):
