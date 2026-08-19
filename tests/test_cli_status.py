@@ -8,6 +8,7 @@ def test_status_reports_live_crawl_blocked() -> None:
     assert payload["live_crawl"] is False
     assert payload["robots_default"] == "on"
     assert payload["anti_block_default"] == "off"
+    assert payload["same_host_default"] is True
     assert "jobs" in payload["profiles"]
     assert payload["engines"]["crawlee"] == "blocked_until_issue_4"
     assert payload["property_count"] >= 14

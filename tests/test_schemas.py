@@ -27,6 +27,9 @@ def test_profile_and_record_schemas_validate() -> None:
     jsonschema.validate(jobs.to_record(), _schema("profile-v1.schema.json"))
     jsonschema.validate(providers.to_record(), _schema("profile-v1.schema.json"))
     jsonschema.validate(legal.to_record(), _schema("profile-v1.schema.json"))
+    for path in PROFILES.glob("*.v1.json"):
+        raw = json.loads(path.read_text(encoding="utf-8"))
+        jsonschema.validate(raw, _schema("profile-v1.schema.json"))
     digest = "a" * 64
     evidence = Evidence(
         evidence_id=evidence_id_for(digest),

@@ -66,6 +66,7 @@ def status() -> dict[str, object]:
         "live_crawl": False,
         "robots_default": "on",
         "anti_block_default": "off",
+        "same_host_default": True,
         "profiles": sorted(profiles),
         "property_count": len(property_ids()),
         "engines": {
