@@ -8,5 +8,6 @@
   "requested_capabilities": ["fetch_public"],
   "allowed_content_types": ["application/json", "text/html"],
   "refresh_interval_seconds": 86400,
-  "max_depth": 2
+  "max_depth": 2,
+  "max_outlinks": 32
 }

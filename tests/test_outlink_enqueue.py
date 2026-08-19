@@ -22,3 +22,22 @@ def test_outlink_enqueue_requires_policy_and_drops_forbidden() -> None:
     assert accepted == ("https://example.com/a", "https://example.com/b")
     assert scheduler.get("https://example.com/a", KIND_DISCOVER).due is True
     assert scheduler.get("https://example.com/b", KIND_DISCOVER).due is True
+
+
+def test_outlink_enqueue_respects_limit() -> None:
+    scheduler = Scheduler()
+    policy = AllowlistPolicy(
+        frozenset({"https://example.com/a", "https://example.com/b", "https://example.com/c"})
+    )
+    accepted = enqueue_authorized_outlinks(
+        scheduler,
+        (
+            "https://example.com/a",
+            "https://example.com/b",
+            "https://example.com/c",
+        ),
+        policy=policy,
+        profile_id="jobs",
+        limit=2,
+    )
+    assert accepted == ("https://example.com/a", "https://example.com/b")

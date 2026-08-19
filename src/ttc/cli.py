@@ -96,6 +96,9 @@ def main(argv: list[str] | None = None) -> None:
         path = Path(args[1] if len(args) > 1 else "receipts.jsonl")
         print(json.dumps(list(ReceiptLog(path).load()), indent=2))
         return
+    if args and args[0] == "profiles":
+        print(json.dumps([profile.to_record() for profile in load_reference_profiles().values()], indent=2))
+        return
     skeleton = build_skeleton()
     products = skeleton.run(PRODUCT_URL, "products-and-offers")
     jobs = skeleton.run(JOB_URL, "jobs")

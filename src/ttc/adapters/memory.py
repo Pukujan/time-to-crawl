@@ -216,4 +216,5 @@ def load_profile(path: Path) -> Profile:
         allowed_content_types=tuple(data.get("allowed_content_types", ("application/json",))),
         refresh_interval_seconds=int(data.get("refresh_interval_seconds", 86400)),
         max_depth=int(data.get("max_depth", 2)),
+        max_outlinks=int(data.get("max_outlinks", 32)),
     )
