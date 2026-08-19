@@ -206,6 +206,11 @@ def load_profile(path: Path) -> Profile:
     for key in FORBIDDEN_PROFILE_KEYS:
         if key in data:
             raise ValueError("executable_profile_forbidden")
+    max_depth = int(data.get("max_depth", 2))
+    max_outlinks = int(data.get("max_outlinks", 32))
+    refresh_interval_seconds = int(data.get("refresh_interval_seconds", 86400))
+    if max_depth < 0 or max_outlinks < 0 or refresh_interval_seconds < 1:
+        raise ValueError("invalid_profile_budget")
     return Profile(
         profile_id=data["profile_id"],
         version=data["version"],
@@ -214,8 +219,8 @@ def load_profile(path: Path) -> Profile:
         identity_keys=tuple(data["identity_keys"]),
         requested_capabilities=tuple(data.get("requested_capabilities", ())),
         allowed_content_types=tuple(data.get("allowed_content_types", ("application/json",))),
-        refresh_interval_seconds=int(data.get("refresh_interval_seconds", 86400)),
-        max_depth=int(data.get("max_depth", 2)),
-        max_outlinks=int(data.get("max_outlinks", 32)),
+        refresh_interval_seconds=refresh_interval_seconds,
+        max_depth=max_depth,
+        max_outlinks=max_outlinks,
         same_host_only=bool(data.get("same_host_only", True)),
     )
