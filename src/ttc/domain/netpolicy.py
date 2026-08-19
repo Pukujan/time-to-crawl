@@ -4,6 +4,7 @@ import ipaddress
 import re
 from urllib.parse import urlparse, unquote
 
+from ttc.domain.capabilities import KNOWN_CAPABILITIES
 from ttc.domain.models import PolicyDecision
 from ttc.domain.robots import path_of, robots_allows
 from ttc.domain.urls import canonicalize
@@ -150,6 +151,14 @@ class PolicyBroker:
                 allowed=False,
                 url=url,
                 reason="not_allowlisted",
+                robots_compliant=True,
+            )
+        unknown = set(requested_capabilities) - KNOWN_CAPABILITIES
+        if unknown:
+            return PolicyDecision(
+                allowed=False,
+                url=canonical,
+                reason="unknown_capability:" + ",".join(sorted(unknown)),
                 robots_compliant=True,
             )
         extra = set(requested_capabilities) - self._granted
