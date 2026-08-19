@@ -4,6 +4,7 @@ from dataclasses import dataclass, replace
 
 from ttc.domain.freshness import is_due
 from ttc.domain.identity import new_id
+from ttc.domain.leases import lease_expired
 from ttc.domain.urls import canonicalize
 
 KIND_DISCOVER = "DISCOVER"
@@ -24,6 +25,7 @@ class WorkItem:
     lease_id: str | None = None
     evidence_id: str | None = None
     completed_at: int | None = None
+    claimed_at: int | None = None
 
 
 class Scheduler:
@@ -44,7 +46,7 @@ class Scheduler:
             return item
         return existing
 
-    def claim(self, url: str, kind: str) -> WorkItem:
+    def claim(self, url: str, kind: str, *, now: int | None = None) -> WorkItem:
         key = _key(url, kind)
         item = self._items[key]
         if item.state == STATE_CANCELLED:
@@ -55,6 +57,7 @@ class Scheduler:
             item,
             state=STATE_LEASED,
             lease_id=new_id("lease"),
+            claimed_at=now,
             generation=item.generation + (1 if item.state != STATE_LEASED else 0),
         )
         self._items[key] = leased
@@ -66,6 +69,8 @@ class Scheduler:
             raise PermissionError("stale_lease")
         if current.state != STATE_LEASED:
             raise PermissionError("not_leased")
+        if now is not None and lease_expired(current, now=now):
+            raise PermissionError("lease_expired")
         if not evidence_id:
             raise PermissionError("evidence_required")
         done = replace(

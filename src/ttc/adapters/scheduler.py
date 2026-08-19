@@ -19,8 +19,8 @@ class DurableScheduler(Scheduler):
         self._save()
         return item
 
-    def claim(self, url: str, kind: str) -> WorkItem:
-        item = super().claim(url, kind)
+    def claim(self, url: str, kind: str, *, now: int | None = None) -> WorkItem:
+        item = super().claim(url, kind, now=now)
         self._save()
         return item
 
