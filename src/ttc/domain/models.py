@@ -70,6 +70,7 @@ class Evidence:
     engine_version: str
     profile_id: str
     run_id: str
+    headers: tuple[tuple[str, str], ...] = ()
 
     def to_record(self) -> dict[str, object]:
         return {
@@ -83,6 +84,7 @@ class Evidence:
             "engine_version": self.engine_version,
             "profile_id": self.profile_id,
             "run_id": self.run_id,
+            "headers": [list(item) for item in self.headers],
         }
 
 

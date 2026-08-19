@@ -12,6 +12,7 @@ from ttc.domain.limits import max_redirects_ok
 from ttc.domain.identity import evidence_id_for, new_id
 from ttc.domain.models import CrawlWork, Evidence, TypedRecord
 from ttc.domain.provenance import ProvenanceLink, bind
+from ttc.domain.receipt_headers import receipt_headers
 from ttc.domain.redirects import detect_redirect_loop
 from ttc.domain.statusgate import blocked_body_must_not_succeed
 from ttc.ports.catalog import OperationalCatalogPort
@@ -33,6 +34,7 @@ class SkeletonResult:
     records: tuple[TypedRecord, ...]
     provenance: tuple[ProvenanceLink, ...]
     outlinks: tuple[str, ...]
+    headers: tuple[tuple[str, str], ...] = ()
 
 
 class WalkingSkeleton:
@@ -118,6 +120,7 @@ class WalkingSkeleton:
             engine_version=crawled.engine_version,
             profile_id=profile.profile_id,
             run_id=run_id,
+            headers=receipt_headers(crawled),
         )
         stored = self._evidence.put(evidence)
         extracted = self._extractor.extract(stored, profile)
@@ -144,6 +147,7 @@ class WalkingSkeleton:
             records=resolved,
             provenance=provenance,
             outlinks=tuple(authorized_outlinks),
+            headers=receipt_headers(crawled),
         )
 
     def query(self, profile_id: str) -> tuple[TypedRecord, ...]:

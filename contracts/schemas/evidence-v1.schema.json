@@ -26,6 +26,15 @@
     "engine_id": {"type": "string", "minLength": 1},
     "engine_version": {"type": "string", "minLength": 1},
     "profile_id": {"type": "string", "minLength": 1},
-    "run_id": {"type": "string", "minLength": 1}
+    "run_id": {"type": "string", "minLength": 1},
+    "headers": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {"type": "string"}
+      }
+    }
   }
 }
