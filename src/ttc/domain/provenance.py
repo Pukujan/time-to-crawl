@@ -14,6 +14,7 @@ class ProvenanceLink:
     run_id: str
     fetched_url: str
     policy_reason: str
+    robots_compliant: bool = True
 
 
 def bind(
@@ -27,6 +28,7 @@ def bind(
     fetched_url: str,
     policy_reason: str,
     activity: str = "extract",
+    robots_compliant: bool = True,
 ) -> ProvenanceLink:
     if not evidence_id:
         raise ValueError("evidence_required")
@@ -44,4 +46,5 @@ def bind(
         run_id=run_id,
         fetched_url=fetched_url,
         policy_reason=policy_reason,
+        robots_compliant=robots_compliant,
     )

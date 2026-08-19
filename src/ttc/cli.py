@@ -63,6 +63,8 @@ def status() -> dict[str, object]:
     profiles = load_reference_profiles()
     return {
         "live_crawl": False,
+        "robots_default": "on",
+        "anti_block_default": "off",
         "profiles": sorted(profiles),
         "property_count": len(property_ids()),
         "engines": {

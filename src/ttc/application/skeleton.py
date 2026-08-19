@@ -171,6 +171,7 @@ class WalkingSkeleton:
                 run_id=run_id,
                 fetched_url=crawled.final_url,
                 policy_reason=decision.reason,
+                robots_compliant=decision.robots_compliant,
             )
             for record in resolved
         )
