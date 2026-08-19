@@ -23,6 +23,8 @@ FORBIDDEN = (
     "neo4j",
 )
 
+DOMAIN_FORBIDDEN = FORBIDDEN + ("jsonschema", "zstandard")
+
 LAYER_RULES = {
     "domain": {"allowed_prefixes": ("ttc.domain",)},
     "ports": {"allowed_prefixes": ("ttc.domain", "ttc.ports")},
@@ -51,9 +53,10 @@ def _layer_files(layer: str) -> list[Path]:
 
 def test_forbidden_vendor_imports_are_absent() -> None:
     for path in ROOT.rglob("*.py"):
+        forbidden = DOMAIN_FORBIDDEN if "domain" in path.parts or "ports" in path.parts else FORBIDDEN
         for name in _imports(path):
             root = name.split(".")[0]
-            assert root not in FORBIDDEN, f"{path} imports {name}"
+            assert root not in forbidden, f"{path} imports {name}"
 
 
 def test_layer_import_direction() -> None:
