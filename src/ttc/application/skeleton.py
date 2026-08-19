@@ -81,6 +81,8 @@ class WalkingSkeleton:
             if out_decision.allowed:
                 authorized_outlinks.append(outlink)
         fail_closed_on_challenge(crawled.body)
+        if not crawled.body:
+            raise PermissionError("empty_body")
         digest = hashlib.sha256(crawled.body).hexdigest()
         evidence = Evidence(
             evidence_id=evidence_id_for(digest),
