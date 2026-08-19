@@ -8,6 +8,7 @@ from ttc.ports.knowledge import KnowledgePort
 from ttc.ports.policy import PolicyDecisionPort
 from ttc.ports.profiles import ProfileRegistryPort
 from ttc.ports.query import QueryViewPort
+from ttc.ports.scheduler import SchedulerPort
 
 __all__ = [
     "CrawlerEnginePort",
@@ -20,4 +21,5 @@ __all__ = [
     "PolicyDecisionPort",
     "ProfileRegistryPort",
     "QueryViewPort",
+    "SchedulerPort",
 ]
