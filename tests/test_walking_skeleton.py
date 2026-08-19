@@ -16,7 +16,7 @@ from ttc.adapters.memory import (
     load_profile,
 )
 from ttc.application.skeleton import WalkingSkeleton
-from ttc.cli import PROVIDER_URL, load_reference_profiles
+from ttc.cli import LEGAL_URL, PROVIDER_URL, load_reference_profiles
 from ttc.ports.catalog import OperationalCatalogPort
 from ttc.ports.crawler import CrawlerEnginePort
 from ttc.ports.evidence import EvidenceStorePort
@@ -35,12 +35,13 @@ def _system(*, engine_id: str = "fake") -> WalkingSkeleton:
     catalog = MemoryCatalog()
     profiles = load_reference_profiles()
     return WalkingSkeleton(
-        policy=AllowlistPolicy(frozenset({PRODUCT_URL, JOB_URL, PROVIDER_URL})),
+        policy=AllowlistPolicy(frozenset({PRODUCT_URL, JOB_URL, PROVIDER_URL, LEGAL_URL})),
         engine=FakeCrawlerEngine(
             {
                 PRODUCT_URL: ROOT / "tests" / "fixtures" / "widget.json",
                 JOB_URL: ROOT / "tests" / "fixtures" / "job.json",
                 PROVIDER_URL: ROOT / "tests" / "fixtures" / "provider.json",
+                LEGAL_URL: ROOT / "tests" / "fixtures" / "legal.json",
             },
             engine_id=engine_id,
         ),
@@ -91,6 +92,16 @@ def test_third_profile_uses_same_engine_path() -> None:
     assert len(records) == 1
     assert records[0].payload["model_id"] == "example-free-model"
     assert records[0].identity_key == "openrouter|example-free-model"
+
+
+def test_legal_profile_uses_same_engine_path() -> None:
+    skeleton = _system()
+    result = skeleton.run(LEGAL_URL, "legal-documents")
+    records = skeleton.query("legal-documents")
+    assert result.profile_id == "legal-documents"
+    assert len(records) == 1
+    assert records[0].payload["citation"] == "123 F.3d 456"
+    assert records[0].identity_key == "123 F.3d 456|US-9"
 
 
 def test_policy_blocks_unknown_url() -> None:

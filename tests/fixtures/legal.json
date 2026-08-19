@@ -1,0 +1,12 @@
+{
+  "records": [
+    {
+      "record_type": "opinion",
+      "citation": "123 F.3d 456",
+      "jurisdiction": "US-9",
+      "court": "9th Cir.",
+      "title": "Example v. Example",
+      "source_url": "https://fixture.time-to-crawl.test/legal"
+    }
+  ]
+}

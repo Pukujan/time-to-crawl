@@ -20,10 +20,16 @@ ROOT = Path(__file__).resolve().parents[2]
 PRODUCT_URL = "https://fixture.time-to-crawl.test/widget"
 JOB_URL = "https://fixture.time-to-crawl.test/job"
 PROVIDER_URL = "https://fixture.time-to-crawl.test/provider"
+LEGAL_URL = "https://fixture.time-to-crawl.test/legal"
 
 
 def load_reference_profiles() -> dict:
-    names = ("products-and-offers.v1.json", "jobs.v1.json", "inference-providers.v1.json")
+    names = (
+        "products-and-offers.v1.json",
+        "jobs.v1.json",
+        "inference-providers.v1.json",
+        "legal-documents.v1.json",
+    )
     loaded = [load_profile(ROOT / "contracts" / "profiles" / name) for name in names]
     return {profile.profile_id: profile for profile in loaded}
 
@@ -32,12 +38,13 @@ def build_skeleton(*, engine_id: str = "fake") -> WalkingSkeleton:
     catalog = MemoryCatalog()
     profiles = load_reference_profiles()
     return WalkingSkeleton(
-        policy=AllowlistPolicy(frozenset({PRODUCT_URL, JOB_URL, PROVIDER_URL})),
+        policy=AllowlistPolicy(frozenset({PRODUCT_URL, JOB_URL, PROVIDER_URL, LEGAL_URL})),
         engine=FakeCrawlerEngine(
             {
                 PRODUCT_URL: ROOT / "tests" / "fixtures" / "widget.json",
                 JOB_URL: ROOT / "tests" / "fixtures" / "job.json",
                 PROVIDER_URL: ROOT / "tests" / "fixtures" / "provider.json",
+                LEGAL_URL: ROOT / "tests" / "fixtures" / "legal.json",
             },
             engine_id=engine_id,
         ),
@@ -55,6 +62,7 @@ def main() -> None:
     products = skeleton.run(PRODUCT_URL, "products-and-offers")
     jobs = skeleton.run(JOB_URL, "jobs")
     providers = skeleton.run(PROVIDER_URL, "inference-providers")
+    legal = skeleton.run(LEGAL_URL, "legal-documents")
     print(
         json.dumps(
             {
@@ -72,6 +80,11 @@ def main() -> None:
                     "profile_id": providers.profile_id,
                     "evidence_id": providers.evidence_id,
                     "record_count": len(providers.records),
+                },
+                "legal": {
+                    "profile_id": legal.profile_id,
+                    "evidence_id": legal.evidence_id,
+                    "record_count": len(legal.records),
                 },
             },
             indent=2,
