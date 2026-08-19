@@ -4,6 +4,8 @@ from ttc.domain.scheduler import KIND_REFRESH, STATE_DONE, Scheduler, engine_see
 
 
 def soak_refresh_cycles(url: str, cycles: int = 24, *, interval: int = 1) -> tuple[int, int]:
+    if cycles < 1 or cycles > 72:
+        raise PermissionError("soak_cycles_out_of_range")
     scheduler = Scheduler()
     now = 0
     seen: set[str] = set()
