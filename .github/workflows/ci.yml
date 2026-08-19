@@ -19,5 +19,6 @@ jobs:
           test -f formal/tla/Scheduler.tla
           grep -q EvidenceBeforeSuccess formal/tla/Scheduler.tla
           grep -q NoStaleWin formal/tla/Scheduler.tla
+          grep -q NoExpiredWin formal/tla/Scheduler.tla
           test -f contracts/properties/ttc-properties-v1.json
           test -f mutmut.toml
