@@ -24,8 +24,8 @@ METADATA_IPS = frozenset(
     }
 )
 
-INTEGER_HOST = re.compile(r"^(0x[0-9a-f]+|\d+)$", re.IGNORECASE)
-DOTTED = re.compile(r"^[\d.]+$")
+INTEGER_HOST = re.compile(r"^(0x[0-9a-f]+|0[0-7]+|\d+)$", re.IGNORECASE)
+DOTTED = re.compile(r"^[0-9a-fx.]+$", re.IGNORECASE)
 
 
 def _parse_ip(host: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address | None:
@@ -38,6 +38,8 @@ def _parse_ip(host: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address | None
         ip = ipaddress.ip_address(name)
         if isinstance(ip, ipaddress.IPv6Address) and ip.ipv4_mapped is not None:
             return ip.ipv4_mapped
+        if isinstance(ip, ipaddress.IPv6Address) and ip.teredo:
+            return None
         return ip
     except ValueError:
         pass
@@ -50,7 +52,7 @@ def _parse_ip(host: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address | None
             return None
     if DOTTED.match(name):
         try:
-            parts = [int(part, 0) for part in name.split(".")]
+            parts = [_int_part(part) for part in name.split(".")]
             if any(part < 0 for part in parts):
                 return None
             if len(parts) == 4 and all(part <= 255 for part in parts):
@@ -64,6 +66,14 @@ def _parse_ip(host: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address | None
         except ValueError:
             return None
     return None
+
+
+def _int_part(part: str) -> int:
+    if part.startswith("0x"):
+        return int(part, 16)
+    if part.startswith("0") and len(part) > 1 and all(ch in "01234567" for ch in part):
+        return int(part, 8)
+    return int(part, 10)
 
 
 def classify_host(host: str) -> str:
