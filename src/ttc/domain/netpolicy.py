@@ -6,6 +6,7 @@ from urllib.parse import urlparse, unquote
 
 from ttc.domain.models import PolicyDecision
 from ttc.domain.robots import path_of, robots_allows
+from ttc.domain.urls import canonicalize
 
 FORBIDDEN_HOSTS = frozenset(
     {
@@ -134,16 +135,17 @@ class PolicyBroker:
         profile_id: str,
         requested_capabilities: tuple[str, ...] = (),
     ) -> PolicyDecision:
-        network_class = classify_url(url)
+        canonical = canonicalize(url)
+        network_class = classify_url(canonical)
         if is_forbidden_class(network_class):
             return PolicyDecision(
                 allowed=False,
-                url=url,
+                url=canonical,
                 reason=f"forbidden_network:{network_class}",
                 robots_compliant=True,
             )
-        origin = _origin(url)
-        if origin not in self._allowed_origins and url not in self._allowed_origins:
+        origin = _origin(canonical)
+        if origin not in self._allowed_origins and canonical not in self._allowed_origins and url not in self._allowed_origins:
             return PolicyDecision(
                 allowed=False,
                 url=url,
@@ -154,23 +156,23 @@ class PolicyBroker:
         if extra:
             return PolicyDecision(
                 allowed=False,
-                url=url,
+                url=canonical,
                 reason="capability_denied:" + ",".join(sorted(extra)),
                 robots_compliant=True,
             )
         robots_ok = True
         if self._robots_txt is not None:
-            robots_ok = robots_allows(self._robots_txt, path_of(url))
+            robots_ok = robots_allows(self._robots_txt, path_of(canonical))
             if not robots_ok:
                 return PolicyDecision(
                     allowed=False,
-                    url=url,
+                    url=canonical,
                     reason="robots_disallow",
                     robots_compliant=False,
                 )
         return PolicyDecision(
             allowed=True,
-            url=url,
+            url=canonical,
             reason="allowlisted",
             robots_compliant=robots_ok,
         )
