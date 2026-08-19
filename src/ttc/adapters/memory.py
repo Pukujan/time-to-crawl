@@ -5,6 +5,7 @@ from pathlib import Path
 
 from ttc.domain.capabilities import DEFAULT_GRANTED
 from ttc.domain.identity import new_id
+from ttc.domain.headers import sanitize_headers
 from ttc.domain.killswitch import is_enabled
 from ttc.domain.models import (
     CrawlResult,
@@ -70,7 +71,7 @@ class FakeCrawlerEngine:
             requested_url=work.url,
             final_url=final_url,
             status=200,
-            headers=(("content-type", "application/json"),),
+            headers=sanitize_headers((("content-type", "application/json"), ("authorization", "Bearer secret"))),
             body=path.read_bytes(),
             content_type="application/json",
             captured_at="2026-08-19T00:00:00Z",
