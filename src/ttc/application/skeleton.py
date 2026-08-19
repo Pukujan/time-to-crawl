@@ -17,6 +17,7 @@ from ttc.domain.identity import evidence_id_for, new_id
 from ttc.domain.models import CrawlWork, Evidence, TypedRecord
 from ttc.domain.provenance import ProvenanceLink, bind
 from ttc.domain.receipt_headers import receipt_headers
+from ttc.domain.receipts import RunReceipt, mint_receipt
 from ttc.domain.redirects import detect_redirect_loop
 from ttc.domain.soft404 import is_soft_404
 from ttc.domain.statusgate import blocked_body_must_not_succeed
@@ -40,6 +41,7 @@ class SkeletonResult:
     provenance: tuple[ProvenanceLink, ...]
     outlinks: tuple[str, ...]
     headers: tuple[tuple[str, str], ...] = ()
+    receipt: RunReceipt | None = None
 
 
 class WalkingSkeleton:
@@ -175,6 +177,16 @@ class WalkingSkeleton:
             )
             for record in resolved
         )
+        receipt = mint_receipt(
+            run_id=run_id,
+            profile_id=profile.profile_id,
+            url=crawled.final_url,
+            policy_reason=decision.reason,
+            engine_id=crawled.engine_id,
+            evidence_id=stored.evidence_id,
+            record_count=len(resolved),
+            robots_compliant=decision.robots_compliant,
+        )
         return SkeletonResult(
             profile_id=profile.profile_id,
             run_id=run_id,
@@ -184,6 +196,7 @@ class WalkingSkeleton:
             provenance=provenance,
             outlinks=tuple(authorized_outlinks),
             headers=receipt_headers(crawled),
+            receipt=receipt,
         )
 
     def query(self, profile_id: str) -> tuple[TypedRecord, ...]:

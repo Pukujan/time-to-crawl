@@ -4,7 +4,7 @@ Authority remains GitHub issues #1–#17. This is a snapshot, not architecture t
 
 ## Head
 
-`f96330a` plus provenance robots receipts. `pytest`: 166 passed, 1 xfailed (DNS rebinding until #4 resolver policy).
+`7965b1f` plus skeleton-minted run receipts. Tests in progress.
 
 ## Landed (fixture / fake only)
 

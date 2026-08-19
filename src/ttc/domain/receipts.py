@@ -17,6 +17,7 @@ class RunReceipt:
     evidence_id: str
     record_count: int
     created_at: str
+    robots_compliant: bool = True
 
 
 def mint_receipt(
@@ -28,6 +29,7 @@ def mint_receipt(
     engine_id: str,
     evidence_id: str,
     record_count: int,
+    robots_compliant: bool = True,
 ) -> RunReceipt:
     if not evidence_id:
         raise ValueError("evidence_required")
@@ -41,4 +43,5 @@ def mint_receipt(
         evidence_id=evidence_id,
         record_count=record_count,
         created_at=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        robots_compliant=robots_compliant,
     )
