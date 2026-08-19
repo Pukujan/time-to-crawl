@@ -12,6 +12,7 @@ from ttc.domain.identity import evidence_id_for, new_id
 from ttc.domain.models import CrawlWork, Evidence, TypedRecord
 from ttc.domain.provenance import ProvenanceLink, bind
 from ttc.domain.redirects import detect_redirect_loop
+from ttc.domain.statusgate import blocked_body_must_not_succeed
 from ttc.ports.catalog import OperationalCatalogPort
 from ttc.ports.crawler import CrawlerEnginePort
 from ttc.ports.evidence import EvidenceStorePort
@@ -72,6 +73,7 @@ class WalkingSkeleton:
         )
         if not max_redirects_ok(crawled):
             raise PermissionError("too_many_redirects")
+        blocked_body_must_not_succeed(crawled.status, crawled.body)
         consume_result(self._budget, crawled)
         hops = crawled.redirect_chain
         if not hops or hops[-1] != crawled.final_url:
