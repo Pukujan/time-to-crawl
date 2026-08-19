@@ -6,4 +6,6 @@ Unreleased work is on `main`. Architecture authority remains issues #1–#17.
 
 - Walking skeleton for four profiles
 - PolicyBroker, CAS/WARC, scheduler TLA+, fake bakeoff
-- Live crawlee/scrapy/search fail closed until #4
+- Live crawlee/scrapy/search/firecrawl/browsertrix fail closed until #4
+- Source Registry can gate PolicyBroker
+- Redirect loops, hop budgets, and five-hop cap fail closed
