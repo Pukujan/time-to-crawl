@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from ttc.cli import doctor, main
 
 
@@ -18,3 +20,10 @@ def test_doctor_command_prints_ok(capsys) -> None:
     out = capsys.readouterr().out
     assert '"ok": true' in out
     assert '"live_crawl": false' in out
+
+
+def test_doctor_fails_closed_when_contracts_missing(tmp_path: Path) -> None:
+    report = doctor(root=tmp_path)
+    assert report["ok"] is False
+    assert "AGENTS.md" in report["missing_files"]
+    assert "ARCHITECTURE.md" in report["missing_files"]

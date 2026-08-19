@@ -13,6 +13,7 @@ jobs:
           python-version: "3.12"
       - run: python -m pip install -e ".[test]"
       - run: python -m pytest
+      - run: python -m ttc.cli doctor
       - run: python -m ttc.cli
       - name: Check TLA+ spec and property catalog
         run: |
