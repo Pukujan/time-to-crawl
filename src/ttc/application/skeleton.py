@@ -8,6 +8,7 @@ from ttc.domain.bodysize import body_within_limit
 from ttc.domain.budget import Budget, BudgetTracker
 from ttc.domain.challenges import fail_closed_on_challenge
 from ttc.domain.contenttypes import content_type_allowed
+from ttc.domain.pagepolicy import page_cannot_widen_scope
 from ttc.domain.limits import max_redirects_ok
 from ttc.domain.identity import evidence_id_for, new_id
 from ttc.domain.models import CrawlWork, Evidence, TypedRecord
@@ -106,6 +107,12 @@ class WalkingSkeleton:
         fail_closed_on_challenge(crawled.body)
         if not crawled.body:
             raise PermissionError("empty_body")
+        try:
+            page_text = crawled.body.decode("utf-8", errors="replace")
+        except Exception:
+            page_text = ""
+        if not page_cannot_widen_scope(page_text):
+            raise PermissionError("page_cannot_widen_scope")
         if not content_type_allowed(profile, crawled.content_type):
             raise PermissionError("content_type_denied")
         digest = hashlib.sha256(crawled.body).hexdigest()
