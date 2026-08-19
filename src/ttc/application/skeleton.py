@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 from dataclasses import dataclass
 
+from ttc.domain.challenges import fail_closed_on_challenge
 from ttc.domain.identity import evidence_id_for, new_id
 from ttc.domain.models import CrawlWork, Evidence, TypedRecord
 from ttc.domain.provenance import ProvenanceLink, bind
@@ -68,6 +69,7 @@ class WalkingSkeleton:
             out_decision = self._policy.authorize(outlink, profile_id=profile.profile_id)
             if out_decision.allowed:
                 authorized_outlinks.append(outlink)
+        fail_closed_on_challenge(crawled.body)
         digest = hashlib.sha256(crawled.body).hexdigest()
         evidence = Evidence(
             evidence_id=evidence_id_for(digest),
