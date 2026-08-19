@@ -5,5 +5,6 @@
   "title": "Inference providers",
   "output_schema": "ttc.typed-record.v1",
   "identity_keys": ["provider_id", "model_id"],
-  "requested_capabilities": ["fetch_public"]
+  "requested_capabilities": ["fetch_public"],
+  "allowed_content_types": ["application/json", "text/html"]
 }

@@ -41,6 +41,7 @@ class Profile:
     output_schema: str
     identity_keys: tuple[str, ...]
     requested_capabilities: tuple[str, ...] = ()
+    allowed_content_types: tuple[str, ...] = ("application/json",)
 
     def to_record(self) -> dict[str, object]:
         return {
@@ -51,6 +52,7 @@ class Profile:
             "output_schema": self.output_schema,
             "identity_keys": list(self.identity_keys),
             "requested_capabilities": list(self.requested_capabilities),
+            "allowed_content_types": list(self.allowed_content_types),
         }
 
 

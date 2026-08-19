@@ -5,5 +5,6 @@
   "title": "Legal documents",
   "output_schema": "ttc.typed-record.v1",
   "identity_keys": ["citation", "jurisdiction"],
-  "requested_capabilities": ["fetch_public"]
+  "requested_capabilities": ["fetch_public"],
+  "allowed_content_types": ["application/json", "text/html", "text/plain", "application/pdf"]
 }

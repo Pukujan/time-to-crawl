@@ -26,6 +26,10 @@
     "requested_capabilities": {
       "type": "array",
       "items": {"type": "string", "minLength": 1}
+    },
+    "allowed_content_types": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
     }
   }
 }
