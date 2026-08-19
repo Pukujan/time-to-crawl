@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-LIVE_ENGINES = frozenset({"crawlee", "scrapy"})
+LIVE_ENGINES = frozenset({"crawlee", "scrapy", "firecrawl", "browsertrix", "playwright"})
 ENABLED: set[str] = {"fake"}
 DISABLED: set[str] = set()
 
