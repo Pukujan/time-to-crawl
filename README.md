@@ -32,4 +32,4 @@ See [`ARCHITECTURE.md`](ARCHITECTURE.md) and [`contracts/architecture/module-map
 
 ## Current gate
 
-Issue **#2** — foundation contracts, import boundaries, and a two-profile fixture walking skeleton. No live Web crawling until **#4** passes. Engine selection waits on **#8**.
+Fixture walking skeleton is on `main` with four profiles (products, jobs, inference-providers, legal-documents), PolicyBroker, CAS/WARC, scheduler TLA+, and a fake-engine bakeoff harness. No live Web crawling until **#4** isolation passes. Engine selection waits on **#8**.

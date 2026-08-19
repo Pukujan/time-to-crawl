@@ -40,10 +40,12 @@ class FakeCrawlerEngine:
         *,
         engine_id: str = "fake",
         redirects: dict[str, tuple[str, ...]] | None = None,
+        outlinks: dict[str, tuple[str, ...]] | None = None,
     ) -> None:
         self._fixtures = fixtures
         self.engine_id = engine_id
         self._redirects = redirects or {}
+        self._outlinks = outlinks or {}
 
     def crawl(self, work: CrawlWork) -> CrawlResult:
         path = self._fixtures.get(work.url)
@@ -62,6 +64,7 @@ class FakeCrawlerEngine:
             engine_id=self.engine_id,
             engine_version="0.0.0-fake",
             redirect_chain=chain,
+            outlinks=self._outlinks.get(work.url, ()),
         )
 
 
