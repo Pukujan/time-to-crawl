@@ -15,3 +15,4 @@ Unreleased work is on `main`. Architecture authority remains issues #1–#17.
 - Skeleton mints RunReceipt; CLI prints receipt_id
 - ClockPort/FrozenClock; fixture-only `ttc soak`
 - `ttc doctor` preflight; unknown CLI commands fail closed
+- DISCOVER outlinks default to same-host; profiles declare max_outlinks

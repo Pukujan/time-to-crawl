@@ -6,5 +6,9 @@
   "output_schema": "ttc.typed-record.v1",
   "identity_keys": ["seller_id", "source_url"],
   "requested_capabilities": ["fetch_public"],
-  "allowed_content_types": ["application/json", "text/html"]
+  "allowed_content_types": ["application/json", "text/html"],
+  "refresh_interval_seconds": 86400,
+  "max_depth": 2,
+  "max_outlinks": 32,
+  "same_host_only": true
 }
