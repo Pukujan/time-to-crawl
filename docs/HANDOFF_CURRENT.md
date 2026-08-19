@@ -4,7 +4,7 @@ Authority remains GitHub issues #1–#17. This is a snapshot, not architecture t
 
 ## Head
 
-`7965b1f` plus skeleton-minted run receipts. Tests in progress.
+`9ca0ad7` on `main`. `pytest`: 166 passed, 1 xfailed (DNS rebinding until #4 resolver policy).
 
 ## Landed (fixture / fake only)
 

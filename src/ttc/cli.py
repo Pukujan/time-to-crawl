@@ -102,21 +102,25 @@ def main(argv: list[str] | None = None) -> None:
                 "products": {
                     "profile_id": products.profile_id,
                     "evidence_id": products.evidence_id,
+                    "receipt_id": products.receipt.receipt_id if products.receipt else None,
                     "record_count": len(products.records),
                 },
                 "jobs": {
                     "profile_id": jobs.profile_id,
                     "evidence_id": jobs.evidence_id,
+                    "receipt_id": jobs.receipt.receipt_id if jobs.receipt else None,
                     "record_count": len(jobs.records),
                 },
                 "providers": {
                     "profile_id": providers.profile_id,
                     "evidence_id": providers.evidence_id,
+                    "receipt_id": providers.receipt.receipt_id if providers.receipt else None,
                     "record_count": len(providers.records),
                 },
                 "legal": {
                     "profile_id": legal.profile_id,
                     "evidence_id": legal.evidence_id,
+                    "receipt_id": legal.receipt.receipt_id if legal.receipt else None,
                     "record_count": len(legal.records),
                 },
             },
