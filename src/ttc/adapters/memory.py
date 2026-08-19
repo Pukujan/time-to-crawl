@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ttc.domain.capabilities import DEFAULT_GRANTED
+from ttc.domain.capabilities import DEFAULT_GRANTED, KNOWN_CAPABILITIES
 from ttc.domain.identity import new_id
 from ttc.domain.headers import sanitize_headers
 from ttc.domain.killswitch import is_enabled
@@ -211,13 +211,17 @@ def load_profile(path: Path) -> Profile:
     refresh_interval_seconds = int(data.get("refresh_interval_seconds", 86400))
     if max_depth < 0 or max_outlinks < 0 or refresh_interval_seconds < 1:
         raise ValueError("invalid_profile_budget")
+    requested_capabilities = tuple(data.get("requested_capabilities", ()))
+    unknown = frozenset(requested_capabilities) - KNOWN_CAPABILITIES
+    if unknown:
+        raise ValueError("unknown_capability:" + ",".join(sorted(unknown)))
     return Profile(
         profile_id=data["profile_id"],
         version=data["version"],
         title=data["title"],
         output_schema=data["output_schema"],
         identity_keys=tuple(data["identity_keys"]),
-        requested_capabilities=tuple(data.get("requested_capabilities", ())),
+        requested_capabilities=requested_capabilities,
         allowed_content_types=tuple(data.get("allowed_content_types", ("application/json",))),
         refresh_interval_seconds=refresh_interval_seconds,
         max_depth=max_depth,
