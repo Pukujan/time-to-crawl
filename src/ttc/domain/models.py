@@ -42,6 +42,7 @@ class Profile:
     identity_keys: tuple[str, ...]
     requested_capabilities: tuple[str, ...] = ()
     allowed_content_types: tuple[str, ...] = ("application/json",)
+    refresh_interval_seconds: int = 86400
 
     def to_record(self) -> dict[str, object]:
         return {
@@ -53,6 +54,7 @@ class Profile:
             "identity_keys": list(self.identity_keys),
             "requested_capabilities": list(self.requested_capabilities),
             "allowed_content_types": list(self.allowed_content_types),
+            "refresh_interval_seconds": self.refresh_interval_seconds,
         }
 
 

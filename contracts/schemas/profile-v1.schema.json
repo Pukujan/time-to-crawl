@@ -30,6 +30,7 @@
     "allowed_content_types": {
       "type": "array",
       "items": {"type": "string", "minLength": 1}
-    }
+    },
+    "refresh_interval_seconds": {"type": "integer", "minimum": 1}
   }
 }
