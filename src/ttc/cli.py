@@ -80,15 +80,47 @@ def status() -> dict[str, object]:
     }
 
 
+def doctor(*, root: Path | None = None) -> dict[str, object]:
+    from ttc.assurance.catalog import load_catalog, property_ids
+    from ttc.domain.killswitch import LIVE_ENGINES, is_enabled
+
+    base = root or ROOT
+    catalog = load_catalog()
+    profiles = load_reference_profiles()
+    live_enabled = [engine for engine in sorted(LIVE_ENGINES) if is_enabled(engine)]
+    missing = [
+        rel
+        for rel in (
+            "contracts/properties/ttc-properties-v1.json",
+            "formal/tla/Scheduler.tla",
+            "AGENTS.md",
+            "ARCHITECTURE.md",
+        )
+        if not (base / rel).exists()
+    ]
+    return {
+        "ok": not live_enabled and not missing,
+        "live_crawl": False,
+        "live_engines_enabled": live_enabled,
+        "profiles": sorted(profiles),
+        "property_count": len(property_ids()),
+        "catalog_status": catalog["schema_version"],
+        "missing_files": missing,
+    }
+
+
 def main(argv: list[str] | None = None) -> None:
     import sys
 
     args = argv if argv is not None else sys.argv[1:]
     if args and args[0] in {"-h", "--help", "help"}:
-        print(json.dumps({"commands": ["status", "properties", "receipts", "profiles", "soak", "skeleton"], "live_crawl": False}, indent=2))
+        print(json.dumps({"commands": ["status", "properties", "receipts", "profiles", "soak", "skeleton", "doctor"], "live_crawl": False}, indent=2))
         return
     if args and args[0] == "status":
         print(json.dumps(status(), indent=2))
+        return
+    if args and args[0] == "doctor":
+        print(json.dumps(doctor(), indent=2))
         return
     if args and args[0] == "properties":
         from ttc.assurance.catalog import property_ids

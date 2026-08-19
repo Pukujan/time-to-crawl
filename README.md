@@ -19,6 +19,7 @@ Fixture-only commands (no network):
 ```bash
 ttc skeleton
 ttc status
+ttc doctor
 ttc properties
 ttc profiles
 ttc soak 24
