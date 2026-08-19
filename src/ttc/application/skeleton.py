@@ -7,6 +7,7 @@ from ttc.application.budgeting import consume_result
 from ttc.domain.bodysize import body_within_limit
 from ttc.domain.budget import Budget, BudgetTracker
 from ttc.domain.challenges import fail_closed_on_challenge
+from ttc.domain.concurrency import SlotPool
 from ttc.domain.contenttypes import content_type_allowed
 from ttc.domain.pagepolicy import page_cannot_widen_scope
 from ttc.domain.limits import max_redirects_ok
@@ -52,6 +53,7 @@ class WalkingSkeleton:
         profiles: ProfileRegistryPort,
         query: QueryViewPort,
         budget: Budget | None = None,
+        slots: SlotPool | None = None,
     ) -> None:
         self._policy = policy
         self._engine = engine
@@ -62,6 +64,7 @@ class WalkingSkeleton:
         self._profiles = profiles
         self._query = query
         self._budget = BudgetTracker(budget or Budget(32, 2_000_000, 2, 60))
+        self._slots = slots
 
     def run(self, url: str, profile_id: str) -> SkeletonResult:
         profile = self._profiles.get(profile_id)
@@ -72,6 +75,15 @@ class WalkingSkeleton:
         )
         if not decision.allowed:
             raise PermissionError(decision.reason)
+        if self._slots is not None:
+            self._slots.acquire()
+        try:
+            return self._run_acquired(url, profile, decision)
+        finally:
+            if self._slots is not None:
+                self._slots.release()
+
+    def _run_acquired(self, url: str, profile, decision) -> SkeletonResult:
         run_id = new_id("run")
         crawled = self._engine.crawl(
             CrawlWork(url=decision.url, profile_id=profile.profile_id, run_id=run_id)
