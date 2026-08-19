@@ -10,6 +10,7 @@ from ttc.domain.challenges import fail_closed_on_challenge
 from ttc.domain.contenttypes import content_type_allowed
 from ttc.domain.pagepolicy import page_cannot_widen_scope
 from ttc.domain.limits import max_redirects_ok
+from ttc.domain.mime import declared_matches_body
 from ttc.domain.identity import evidence_id_for, new_id
 from ttc.domain.models import CrawlWork, Evidence, TypedRecord
 from ttc.domain.provenance import ProvenanceLink, bind
@@ -115,6 +116,8 @@ class WalkingSkeleton:
             raise PermissionError("page_cannot_widen_scope")
         if not content_type_allowed(profile, crawled.content_type):
             raise PermissionError("content_type_denied")
+        if not declared_matches_body(crawled.content_type, crawled.body):
+            raise PermissionError("content_type_mismatch")
         digest = hashlib.sha256(crawled.body).hexdigest()
         evidence = Evidence(
             evidence_id=evidence_id_for(digest),
