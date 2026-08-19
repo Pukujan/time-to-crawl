@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from ttc.application.budgeting import consume_result
 from ttc.domain.budget import Budget, BudgetTracker
 from ttc.domain.challenges import fail_closed_on_challenge
+from ttc.domain.contenttypes import content_type_allowed
 from ttc.domain.identity import evidence_id_for, new_id
 from ttc.domain.models import CrawlWork, Evidence, TypedRecord
 from ttc.domain.provenance import ProvenanceLink, bind
@@ -83,6 +84,8 @@ class WalkingSkeleton:
         fail_closed_on_challenge(crawled.body)
         if not crawled.body:
             raise PermissionError("empty_body")
+        if not content_type_allowed(profile, crawled.content_type):
+            raise PermissionError("content_type_denied")
         digest = hashlib.sha256(crawled.body).hexdigest()
         evidence = Evidence(
             evidence_id=evidence_id_for(digest),
