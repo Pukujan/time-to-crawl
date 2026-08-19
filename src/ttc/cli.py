@@ -99,6 +99,13 @@ def main(argv: list[str] | None = None) -> None:
     if args and args[0] == "profiles":
         print(json.dumps([profile.to_record() for profile in load_reference_profiles().values()], indent=2))
         return
+    if args and args[0] == "soak":
+        from ttc.ops.soak import soak_refresh_cycles
+
+        cycles = int(args[1]) if len(args) > 1 else 24
+        completed, seen = soak_refresh_cycles("https://fixture.time-to-crawl.test/widget", cycles=cycles)
+        print(json.dumps({"cycles": completed, "engine_seen": seen, "live_crawl": False}, indent=2))
+        return
     skeleton = build_skeleton()
     products = skeleton.run(PRODUCT_URL, "products-and-offers")
     jobs = skeleton.run(JOB_URL, "jobs")
