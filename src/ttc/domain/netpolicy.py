@@ -14,6 +14,10 @@ from ttc.domain.urls import canonicalize
 class _SourceAuth(Protocol):
     def is_authorized(self, url: str) -> bool: ...
 
+
+class _RobotsLookup(Protocol):
+    def allows(self, origin: str, path: str) -> bool: ...
+
 FORBIDDEN_HOSTS = frozenset(
     {
         "localhost",
@@ -131,12 +135,14 @@ class PolicyBroker:
         robots_txt: str | None = None,
         source_registry: _SourceAuth | None = None,
         require_source_auth: bool = False,
+        robots_lookup: _RobotsLookup | None = None,
     ) -> None:
         self._allowed_origins = allowed_origins
         self._granted = granted_capabilities
         self._robots_txt = robots_txt
         self._source_registry = source_registry
         self._require_source_auth = require_source_auth
+        self._robots_lookup = robots_lookup
 
     def authorize(
         self,
@@ -187,15 +193,17 @@ class PolicyBroker:
                     robots_compliant=True,
                 )
         robots_ok = True
-        if self._robots_txt is not None:
+        if self._robots_lookup is not None:
+            robots_ok = self._robots_lookup.allows(origin, path_of(canonical))
+        elif self._robots_txt is not None:
             robots_ok = robots_allows(self._robots_txt, path_of(canonical))
-            if not robots_ok:
-                return PolicyDecision(
-                    allowed=False,
-                    url=canonical,
-                    reason="robots_disallow",
-                    robots_compliant=False,
-                )
+        if not robots_ok:
+            return PolicyDecision(
+                allowed=False,
+                url=canonical,
+                reason="robots_disallow",
+                robots_compliant=False,
+            )
         return PolicyDecision(
             allowed=True,
             url=canonical,
