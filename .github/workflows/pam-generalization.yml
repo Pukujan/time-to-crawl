@@ -1,0 +1,77 @@
+name: PAM unseen generalization
+
+on:
+  pull_request:
+  push:
+    branches:
+      - adopt/pam-v0.2-unseen
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Acquire exact frozen PAM revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          PAM_DIR="$RUNNER_TEMP/pam"
+          git init "$PAM_DIR"
+          git -C "$PAM_DIR" remote add origin https://github.com/Pukujan/project-assurance-modules.git
+          GIT_TERMINAL_PROMPT=0 git \
+            -c credential.helper= \
+            -c http.https://github.com/.extraheader= \
+            -C "$PAM_DIR" fetch --depth=1 origin a10ad56b7088c1e101e80914a9e00357dbef9120
+          git -C "$PAM_DIR" checkout --detach FETCH_HEAD
+          test "$(git -C "$PAM_DIR" rev-parse HEAD)" = "a10ad56b7088c1e101e80914a9e00357dbef9120"
+          echo "PAM_DIR=$PAM_DIR" >> "$GITHUB_ENV"
+
+      - name: Install frozen PAM validator dependencies
+        run: python -m pip install -e "$PAM_DIR"
+
+      - name: Validate adopter-owned PAM state
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PAM_DIR"
+          python -m scripts.pam_validate "$GITHUB_WORKSPACE/PROJECT_ASSURANCE.json"
+          python -m scripts.pam_handoff "$GITHUB_WORKSPACE/HANDOFF_STATE.json"
+          python -m scripts.pam_bootstrap "$GITHUB_WORKSPACE/PAM_BOOTSTRAP.json"
+
+      - name: Verify manifest dispositions equal frozen router output
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$PAM_DIR"
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          from scripts.pam_core import route_as_json
+
+          manifest = json.loads(
+              Path(os.environ["GITHUB_WORKSPACE"], "PROJECT_ASSURANCE.json").read_text(encoding="utf-8")
+          )
+          routed = {
+              (item["module_id"], item["version"]): item["disposition"]
+              for item in route_as_json(manifest["project_facts"])
+          }
+          declared = {
+              (item["module_id"], item["version"]): item["disposition"]
+              for item in manifest["modules"]
+          }
+          if routed != declared:
+              raise SystemExit(f"routing mismatch: frozen={routed!r} declared={declared!r}")
+          print("frozen routing matches manifest dispositions")
+          PY
