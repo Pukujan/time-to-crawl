@@ -1,0 +1,40 @@
+{
+  "schema_version": "pam-bootstrap/0.1.0",
+  "source": {
+    "repository": "Pukujan/project-assurance-modules",
+    "remote": "https://github.com/Pukujan/project-assurance-modules.git",
+    "requested_revision": {
+      "kind": "git_commit",
+      "value": "a10ad56b7088c1e101e80914a9e00357dbef9120"
+    },
+    "resolved_commit": "a10ad56b7088c1e101e80914a9e00357dbef9120"
+  },
+  "acquisition": {
+    "mechanism": "git_fetch_exact_revision",
+    "fetch_scope": "single_revision",
+    "checkout_mode": "detached"
+  },
+  "verification": {
+    "required": true,
+    "method": "git_rev_parse_head",
+    "expected_commit": "a10ad56b7088c1e101e80914a9e00357dbef9120",
+    "fail_on_mismatch": true
+  },
+  "start": {
+    "kind": "manifest",
+    "locator": "PROJECT_ASSURANCE.json",
+    "must_exist_before_routing": true
+  },
+  "content_identity": {
+    "authoritative_basis": "git_object_id",
+    "working_tree_bytes_authoritative": false,
+    "line_ending_normalization_authoritative": false,
+    "note": "The frozen PAM methodology identity is the exact Git commit. The unseen project baseline is separately pinned to Git commit f8e7c39bed2b7a25263e6abe06017e8d035bcad0."
+  },
+  "failure_behavior": {
+    "acquisition_unavailable": "stop_before_routing",
+    "revision_unavailable": "stop_before_routing",
+    "revision_mismatch": "stop_before_routing",
+    "start_missing": "stop_before_routing"
+  }
+}
