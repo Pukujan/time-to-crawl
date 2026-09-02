@@ -1,0 +1,116 @@
+{
+  "schema_version": "pam-handoff/0.1.0",
+  "state_kind": "current",
+  "project": {
+    "name": "Time to Crawl",
+    "repository": "Pukujan/time-to-crawl",
+    "phase": "unseen-project PAM v0.2 generalization compatibility validated"
+  },
+  "work": {
+    "owning_repository": "Pukujan/time-to-crawl",
+    "issue": 1,
+    "branch": "adopt/pam-v0.2-unseen",
+    "pr": 19,
+    "state": "complete"
+  },
+  "methodology": {
+    "repository": "Pukujan/project-assurance-modules",
+    "revision": "a10ad56b7088c1e101e80914a9e00357dbef9120",
+    "modules": [
+      {"module_id": "continuity.structured-handoff", "version": "0.1.0"},
+      {"module_id": "projectization.build-vs-reuse", "version": "0.1.0"},
+      {"module_id": "projectization.scope-boundary", "version": "0.1.0"},
+      {"module_id": "planning.foundation", "version": "0.1.0"},
+      {"module_id": "engineering.swe-ci-foundation", "version": "0.1.0"},
+      {"module_id": "benchmark.integrity", "version": "0.1.0"},
+      {"module_id": "provenance.decision-lineage", "version": "0.1.0"}
+    ]
+  },
+  "components": [
+    {
+      "name": "Time to Crawl unseen baseline",
+      "role": "Independent project baseline selected after PAM v0.2 was frozen.",
+      "locator": "Pukujan/time-to-crawl@main",
+      "observed_identity": {"kind": "git_commit", "value": "f8e7c39bed2b7a25263e6abe06017e8d035bcad0"},
+      "tested_identity": {"kind": "git_commit", "value": "f8e7c39bed2b7a25263e6abe06017e8d035bcad0"}
+    },
+    {
+      "name": "Frozen PAM v0.2 candidate",
+      "role": "Methodology/config/schema contract only; not a Time to Crawl runtime dependency.",
+      "locator": "Pukujan/project-assurance-modules@freeze/v0.2-bounded-extractions",
+      "observed_identity": {"kind": "git_commit", "value": "a10ad56b7088c1e101e80914a9e00357dbef9120"},
+      "tested_identity": {"kind": "git_commit", "value": "a10ad56b7088c1e101e80914a9e00357dbef9120"}
+    }
+  ],
+  "validation": {
+    "passed": [
+      {
+        "name": "Unseen baseline repository CI",
+        "evidence": "Time to Crawl GitHub Actions run 32228987637 completed successfully at exact main SHA f8e7c39bed2b7a25263e6abe06017e8d035bcad0."
+      },
+      {
+        "name": "Frozen PAM unseen-project validation and routing equivalence",
+        "evidence": "Time to Crawl GitHub Actions run 33576054855 completed successfully: exact PAM a10ad56b7088c1e101e80914a9e00357dbef9120 was detached-fetched and verified; PROJECT_ASSURANCE.json, HANDOFF_STATE.json, and PAM_BOOTSTRAP.json validated; declared module dispositions exactly matched frozen router output."
+      },
+      {
+        "name": "Native project CI with PAM-only adoption files",
+        "evidence": "Time to Crawl GitHub Actions run 33576054873 completed successfully on PR #19, including pytest, doctor/CLI checks, and TLA/property artifact checks."
+      }
+    ],
+    "failed": [],
+    "not_run": [
+      "Real Crawlee-vs-Scrapy matched engine bakeoff",
+      "Configured private hidden-holdout campaign",
+      "Any model/LLM transfer benchmark"
+    ]
+  },
+  "next_action": {
+    "repository": "Pukujan/project-assurance-modules",
+    "issue": null,
+    "action": "Review the frozen v0.2 evidence package (PAM CI, RA-plugin second adoption, and Time to Crawl unseen-project compatibility) and decide whether PR #5 should be merged/released without changing frozen SHA a10ad56b7088c1e101e80914a9e00357dbef9120.",
+    "acceptance": "Any release/merge decision preserves the frozen SHA as the tested methodology identity and does not reinterpret the unseen compatibility check as a causal benchmark."
+  },
+  "blockers": [],
+  "scope": {
+    "do_not_start": [
+      "Unrestricted live Web crawling before Time to Crawl issue #4 isolation passes",
+      "A custom generic crawler, request queue, or browser pool before issue #8 demonstrates a concrete reuse gap",
+      "Exposure of private/hidden holdout cases to implementation agents or this handoff",
+      "Any change to frozen PAM revision a10ad56b7088c1e101e80914a9e00357dbef9120 to make this unseen project pass",
+      "Any Research Assurance retrospective restart or new model benchmark as part of this compatibility check"
+    ]
+  },
+  "decisions_not_to_reverse": [
+    "Live GitHub issues/contracts remain Time to Crawl authority; conversational memory and stored snapshots do not override them.",
+    "Internet content remains untrusted data and cannot grant capabilities or tool authority.",
+    "Crawler engines remain replaceable execution dependencies behind CrawlerEnginePort; policy authority remains outside them.",
+    "A bespoke generic crawler remains forbidden unless the matched reuse bakeoff records a concrete unsatisfied requirement.",
+    "PAM remains methodology/config/schema/evidence state only and is not added to the Time to Crawl runtime dependency graph."
+  ],
+  "open_questions": [
+    "What does the real Crawlee-vs-Scrapy matched bakeoff show once issue #4 isolation permits the required bounded execution?",
+    "What consolidated failure register should complement the existing property catalog and issue-specific threat/failure analysis?",
+    "Should Ruff or another static-quality check be added to the ordinary CI lane, or is there a project-specific rationale to omit it?",
+    "What exact protocol/data/package identities and leakage checks will define the first configured hidden-holdout campaign?",
+    "How should consequential architecture/engine/security decisions record accepted versus proposed/superseded status with exact supporting identities?"
+  ],
+  "reconciliation": {
+    "live_state_wins": true,
+    "checks": [
+      "Re-fetch time-to-crawl main SHA, issue #1, issue #4, issue #8, PR #19, and relevant CI before project mutation.",
+      "Treat docs/HANDOFF_CURRENT.md as a project-native snapshot and reconcile its recorded head with live main rather than assuming it is current.",
+      "Verify freeze/v0.2-bounded-extractions and exact PAM SHA a10ad56b7088c1e101e80914a9e00357dbef9120 still resolve before relying on methodology state.",
+      "Do not turn pending PAM requirements into satisfied states without the evidence kinds required by the frozen module contract."
+    ],
+    "stale_state_behavior": "stop_and_reconcile"
+  },
+  "hidden_evaluation": {
+    "agent_visible_hidden_material": false,
+    "policy": "Only public holdout interfaces, property flags, and process boundaries may appear here. Exact private holdout cases, seeds, labels, expected failures, and hidden evaluator details remain outside agent-visible repository state."
+  },
+  "handoff": {
+    "created_from_identity": {"kind": "git_commit", "value": "63c5eb997a20dd20fc728d67f3897eca6271992c"},
+    "created_at": "2026-09-02T00:40:00Z",
+    "reason": "validation_transition"
+  }
+}
