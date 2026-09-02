@@ -3,7 +3,7 @@
   "project": {
     "name": "Time to Crawl",
     "repository": "Pukujan/time-to-crawl",
-    "phase": "unseen-project PAM v0.2 generalization preflight"
+    "phase": "unseen-project PAM v0.2 generalization evidence recorded"
   },
   "methodology": {
     "repository": "Pukujan/project-assurance-modules",
@@ -48,7 +48,12 @@
           "evidence": [{"kind": "file", "locator": "HANDOFF_STATE.json", "note": "The unseen-adopter branch adds a versioned machine-readable current state packet while retaining the project's existing prose handoff."}],
           "rationale": null
         },
-        {"requirement_id": "HANDOFF-003", "state": "pending", "evidence": [], "rationale": null},
+        {
+          "requirement_id": "HANDOFF-003",
+          "state": "satisfied",
+          "evidence": [{"kind": "ci_run", "locator": "GitHub Actions run 33576054855", "note": "Frozen-PAM unseen-generalization workflow fetched and detached-verified a10ad56b7088c1e101e80914a9e00357dbef9120, validated manifest/handoff/bootstrap, and proved declared dispositions equal frozen router output."}],
+          "rationale": null
+        },
         {
           "requirement_id": "HANDOFF-004",
           "state": "satisfied",
